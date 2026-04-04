@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2174
+//Next value Id: 2175
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -230,6 +230,7 @@
     VALUE_ENTRY(Chip7Cells,    "",   2167 ) \
     VALUE_ENTRY(Chip8Cells,    "",   2168 ) \
     VALUE_ENTRY(CellsBalancing,"",   2160 ) \
+    VALUE_ENTRY(CellsBalancingCmd,"", 2174 ) \
     VALUE_ENTRY(LoopCnt,      "",    2171 ) \
     VALUE_ENTRY(LoopState,    "",    2172 ) \
     VALUE_ENTRY(PecErrCnt,    "",    2173 ) \
