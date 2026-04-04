@@ -63,6 +63,22 @@ evidence supports each status.
   - Promotion requires explicit follow-up decision entries with proof and
     scope.
 
+### DEC-0004 — Lock idcmode=0 fix ordering and defer idcmode>0 path
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - For the current planning context (`numbmbs = 4`, `idcmode = 0`), firmware
+    follow-up slices are ordered as: bounds safety first, slot-coverage
+    alignment second, balancing-metric semantics third.
+  - Items that depend on `idcmode > 0` current-path behavior are explicitly
+    deferred and must not block idcmode=0 safety fixes.
+  - This lock is planning-only and does not itself approve firmware behavior
+    changes.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-idcmode0-fix-matrix-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-investigation-2026-04-03.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
