@@ -111,6 +111,22 @@ evidence supports each status.
   - `src/BatMan.cpp`
   - `include/param_prj.h`
 
+### DEC-0007 — Lock append-only commanded-balancing field contract
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Preserve `CellsBalancing` as pre-mask candidate count.
+  - Add `CellsBalancingCmd` as append-only post-mask commanded-count field in a
+    follow-up code slice.
+  - Place `CellsBalancingCmd` immediately after `CellsBalancing` in parameter
+    ordering (before `LoopCnt`).
+  - Keep next code slice out of scope for CAN additions and balancing
+    threshold/cadence changes.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-balancing-commanded-field-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-balancing-semantics-lock-2026-04-04.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
