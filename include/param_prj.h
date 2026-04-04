@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2175
+//Next value Id: 2177
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -71,6 +71,8 @@
     VALUE_ENTRY(deltaV,      "mV",   2005 ) \
     VALUE_ENTRY(udc,         "V",    2006 ) \
     VALUE_ENTRY(idc,         "A",    2007 ) \
+    VALUE_ENTRY(IDCTrace,    "A",    2175 ) \
+    VALUE_ENTRY(AsDiffTrace, "As",   2176 ) \
     VALUE_ENTRY(TempMax,     "°C",   2008 ) \
     VALUE_ENTRY(TempMin,     "°C",   2156 ) \
     VALUE_ENTRY(uavg,        "mV",   2009 ) \

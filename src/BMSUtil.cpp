@@ -33,8 +33,12 @@ float asDiff = 0;//Ampsecond change since last SOC update
 void BMSUtil::UpdateSOC()
 {
     TempSOC = Param::GetInt(Param::soc);
+    float idcObserved = Param::GetFloat(Param::idc);
 
-    if(ABS(Param::GetFloat(Param::idc)) < NoCurLim)
+    Param::SetFloat(Param::IDCTrace, idcObserved);
+    Param::SetFloat(Param::AsDiffTrace, asDiff);
+
+    if(ABS(idcObserved) < NoCurLim)
     {
         NoCurCounter++;
     }
