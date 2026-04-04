@@ -127,6 +127,21 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-balancing-commanded-field-lock-2026-04-04.md`
   - `docs/investigations/tesla-m3-bms-balancing-semantics-lock-2026-04-04.md`
 
+### DEC-0008 — Lock SOC/current-path investigation status before code changes
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Keep SOC/current-path changes blocked until a bounded validation slice
+    confirms runtime `idc` source behavior.
+  - Treat `asDiff` as "consumed but no writer proven in repo" for planning.
+  - Preserve conservative release language: no SOC accuracy claim from repo-only
+    evidence.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-soc-current-path-lock-2026-04-04.md`
+  - `src/BMSUtil.cpp`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
