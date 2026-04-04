@@ -386,7 +386,7 @@ void BATMan::GetData(uint8_t ReqID)
     switch (ReqID)
     {
     case 0x47:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             for (int g = 0; g <= 2; g++)
             {
@@ -400,7 +400,7 @@ void BATMan::GetData(uint8_t ReqID)
         break;
 
     case 0x48:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             for (int g = 3; g <= 5; g++)
             {
@@ -414,7 +414,7 @@ void BATMan::GetData(uint8_t ReqID)
         break;
 
     case 0x49:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             for (int g = 6; g <= 8; g++)
             {
@@ -429,7 +429,7 @@ void BATMan::GetData(uint8_t ReqID)
 
 
     case 0x4A:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             for (int g = 9; g <= 11; g++)
             {
@@ -443,7 +443,7 @@ void BATMan::GetData(uint8_t ReqID)
         break;
 
     case 0x4B:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             for (int g = 12; g <= 14; g++)
             {
@@ -457,7 +457,7 @@ void BATMan::GetData(uint8_t ReqID)
         break;
 
     case 0x4C:
-        for (int h = 0; h <= 8; h++)
+        for (int h = 0; h < 8; h++)
         {
             tempvol = Fluffer[3 + (h * 7)] * 256 + Fluffer [2 + (h * 7)];
             if (tempvol != 0xffff)
@@ -687,7 +687,7 @@ void BATMan::upDateCellVolts(void)
 
     while (h <= 100)
     {
-        if(Yc < 14) //Check actual measurement present
+        if(Yc < 15) //Check actual measurement present
         {
             if(Voltage[Xr][Yc] > 10) //Check actual measurement present
             {
