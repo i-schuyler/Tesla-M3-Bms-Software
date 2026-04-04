@@ -142,6 +142,22 @@ evidence supports each status.
   - `src/BMSUtil.cpp`
   - `include/param_prj.h`
 
+### DEC-0009 — Validate idcmode=0 SOC current-path truth and keep fixes gated
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Validation confirms `asDiff` is consumed but has no writer in current repo
+    code.
+  - Validation does not prove any in-repo `idc` source path under `idcmode=0`.
+  - Keep direct SOC behavior changes gated pending bounded runtime
+    instrumentation evidence.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-soc-current-path-validation-2026-04-04.md`
+  - `src/BMSUtil.cpp`
+  - `src/main.cpp`
+  - `src/CAN_Common.cpp`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
