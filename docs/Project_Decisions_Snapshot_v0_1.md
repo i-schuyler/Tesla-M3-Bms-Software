@@ -79,6 +79,22 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-idcmode0-fix-matrix-2026-04-04.md`
   - `docs/investigations/tesla-m3-bms-investigation-2026-04-03.md`
 
+### DEC-0005 — Tighten first firmware slice to proven idcmode=0 defects
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Refine ordering so the first firmware slice combines the strongest-evidence,
+    idcmode=0-relevant correctness fixes in one bounded pass:
+    - proven `<= 8` bounds defects on `[8]` arrays,
+    - proven slot/index `14` coverage mismatch.
+  - Keep inferred chip-count guardrails after that first correctness slice.
+  - Keep balancing semantics after correctness/guardrail slices.
+  - Keep idcmode>0 current-path and dependent State of Charge (SOC) items
+    deferred.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-idcmode0-fix-matrix-2026-04-04.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
