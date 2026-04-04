@@ -190,6 +190,10 @@ float Cell1start, Cell2start = 0;
 void BATMan::BatStart()
 {
     ChipNum = Param::GetInt(Param::numbmbs)*2;
+    if (ChipNum > 8)
+    {
+        ChipNum = 8;
+    }
 }
 
 void BATMan::loop() //runs every 100ms
