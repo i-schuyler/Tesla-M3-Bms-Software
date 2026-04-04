@@ -158,6 +158,24 @@ evidence supports each status.
   - `src/main.cpp`
   - `src/CAN_Common.cpp`
 
+### DEC-0010 — Lock append-only SOC trace fields and placement
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Keep existing `idc` field unchanged.
+  - Add append-only diagnostics in the next instrumentation slice:
+    - `IDCTrace` for observed `Param::idc` trace value,
+    - `AsDiffTrace` for observed `asDiff` trace value.
+  - Lock placement as immediate sequence after `idc` (`IDCTrace` first,
+    `AsDiffTrace` second).
+  - Keep next slice out of scope for SOC math changes, `asDiff` writer
+    restoration, CAN additions, and existing-field renames/removals.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-soc-trace-field-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-soc-current-path-validation-2026-04-04.md`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
