@@ -106,11 +106,12 @@ critical path:
 
 ## 8) Recommended implementation order for later slices
 
-1. **Slice 2B (safety bounds hardening):**
-   - fix all `<= 8` loop bounds on `[8]` arrays,
-   - add defensive chip-count bounds checks before indexed writes.
-2. **Slice 2C (cell slot coverage alignment):**
-   - resolve `GetData()`/`upDateCellVolts()` slot-bound mismatch,
+1. **Slice 2B (proven idcmode=0 correctness fixes):**
+   - fix all proven `<= 8` loop bounds defects on `[8]` arrays,
+   - resolve the proven `GetData()`/`upDateCellVolts()` slot/index `14`
+     coverage mismatch.
+2. **Slice 2C (post-correctness guardrails):**
+   - add inferred chip-count guardrails before indexed writes,
    - verify each chip slot path is represented in derived `uN` and min/max values.
 3. **Slice 2D (balancing metric clarity):**
    - clarify/report `CellsBalancing` semantics (candidate versus commanded)
@@ -122,7 +123,9 @@ critical path:
 ## 9) Suggested slice boundaries for code work
 
 - Keep `idcmode=0` safety work isolated from SOC/current mode work.
-- Separate memory-safety and indexing fixes from reporting semantics decisions.
+- Keep the first firmware slice bounded to proven idcmode=0 correctness defects
+  (bounds and slot coverage), then handle inferred guardrails next.
+- Separate correctness/guardrail fixes from reporting semantics decisions.
 - Do not combine balancing algorithm changes with parser/bounds corrections.
 - Require per-slice evidence notes under `docs/investigations/` before promoting
   behavior claims into canonical docs.
@@ -131,4 +134,3 @@ critical path:
 
 This matrix is a planning artifact. It does **not** claim that balancing is
 fixed, SOC is accurate, or full 96-cell behavior is hardware-validated.
-
