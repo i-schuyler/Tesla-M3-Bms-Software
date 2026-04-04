@@ -538,6 +538,7 @@ void BATMan::WriteCfg()
     //uint8_t DCC16_9 = 0;
     //uint8_t DCC8_1 = 0;
     uint16_t cfgwrt [25] = {0};
+    uint16_t CellBalancingCmd = 0;
 
     cfgwrt[0]= 0x112F;        //CMD
 
@@ -564,6 +565,9 @@ void BATMan::WriteCfg()
             tempData[3] = tempData[3] & 0x55;
         }
 
+        CellBalancingCmd += __builtin_popcount((unsigned int)tempData[2]);
+        CellBalancingCmd += __builtin_popcount((unsigned int)tempData[3]);
+
         uint16_t payPec =0x0010;
 
         crc14_bytes(4,tempData,&payPec);
@@ -574,6 +578,8 @@ void BATMan::WriteCfg()
         cfgwrt[3+h*3] = payPec;//Contains the PEC and other shit
 
     }
+
+    Param::SetInt(Param::CellsBalancingCmd, CellBalancingCmd);
 
     DigIo::BatCS.Clear();
 
