@@ -95,6 +95,22 @@ evidence supports each status.
 - Evidence:
   - `docs/investigations/tesla-m3-bms-idcmode0-fix-matrix-2026-04-04.md`
 
+### DEC-0006 — Lock balancing reporting semantics for v0.x
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Preserve existing `CellsBalancing` meaning for v0.x as current pre-mask
+    candidate-count behavior.
+  - Do not silently redefine `CellsBalancing` to post-mask commanded-count
+    behavior.
+  - If commanded-count visibility is required, implement it as an append-only
+    field/counter in a dedicated follow-up slice.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-balancing-semantics-lock-2026-04-04.md`
+  - `src/BatMan.cpp`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
