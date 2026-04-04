@@ -1,8 +1,17 @@
 # Tesla Model 3 BMS Repo Reality Scan (2026-04-04)
 
+## Document Metadata
+
+- Title: Tesla Model 3 BMS Repo Reality Scan
+- Version: 0.1
+- Date: 2026-04-04
+- Scope: Slice 1A documentation reality check
+- Status: Investigation artifact (non-canonical by itself)
+
 ## Scope and Purpose
 
-This report captures repo-observable reality for documentation alignment in Slice 1A.
+This report captures repo-observable reality for documentation alignment in
+Slice 1A.
 
 It is an investigation artifact. It does not approve firmware behavior changes.
 
@@ -78,7 +87,8 @@ It is an investigation artifact. It does not approve firmware behavior changes.
 
 - Status: `UNPROVEN`
 - Findings:
-  - This repository includes terminal commands and JSON parameter output hooks but no standalone front-end module catalog.
+  - This repository includes terminal commands and JSON parameter output hooks,
+    but no standalone front-end module catalog.
 - Evidence:
   - `src/terminal_prj.cpp:20` and `src/terminal_prj.cpp:21` describe command set for web interface usage.
   - `src/terminal_prj.cpp:47` exposes `json` terminal command.
