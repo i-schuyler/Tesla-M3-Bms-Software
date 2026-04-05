@@ -176,6 +176,24 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-soc-current-path-validation-2026-04-04.md`
   - `include/param_prj.h`
 
+### DEC-0011 — Lock live cell-update anomaly as measurement-path first investigation
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Treat the observed "only `u1..u12` moving" runtime pattern as unresolved
+    measurement/update-path behavior until bounded freshness instrumentation is
+    captured.
+  - Do not claim hardware fault confirmation from current repo evidence plus
+    field observations alone.
+  - Keep next action narrow: instrumentation-first validation of read-group and
+    publication freshness before any hardware-only conclusion.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-live-cell-update-path-investigation-2026-04-04.md`
+  - `src/BatMan.cpp`
+  - `include/BatMan.h`
+  - `src/main.cpp`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
