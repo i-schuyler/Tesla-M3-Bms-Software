@@ -24,6 +24,8 @@ with repo reality.
    before changing firmware behavior or reporting semantics.
 4. **Evidence over assumptions**: do not claim behavior that is not proven by
    repository evidence or hardware validation.
+5. **Release version sync**: before tagging, confirm the firmware-reported
+   version, changelog version, and Git tag/release version all match.
 
 ## Documentation Expectations
 
