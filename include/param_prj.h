@@ -39,7 +39,7 @@
  */
 
 //Define a version string of your firmware here
-#define VER 0.08.TC
+#define VER v0.9.0-pre1
 
 /* Entries must be ordered as follows:
    1. Saveable parameters (id != 0)

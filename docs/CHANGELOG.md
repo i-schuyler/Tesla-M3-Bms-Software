@@ -7,6 +7,7 @@ This changelog describes release-level changes for tagged firmware builds. Pre-r
 ## Release Notes Template
 
 Copy/paste and fill for each release:
+Before tagging, confirm firmware-reported version matches the changelog/release version.
 
 ```
 Version:
@@ -83,4 +84,3 @@ Rollback:
 Artifact:
 - Release asset name: stm32_m3bms.bin
 - sha256: [TODO]
-
