@@ -234,6 +234,26 @@ evidence supports each status.
   - `src/main.cpp`
   - `include/param_prj.h`
 
+### DEC-0014 — Lock append-only stale-display warning field and placement
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Lock new append-only diagnostic field name as `CellDataStaleWarn`.
+  - Lock meaning as a diagnostic warning that one or more later cell-ingest
+    groups are not fresh, so displayed `u*` values may be partially stale or
+    front-loaded toward earlier groups.
+  - Lock placement as immediate insertion after `CellGrp4Fresh` in
+    parameter ordering.
+  - Keep next code slice out of scope for balancing logic changes,
+    SOC/current-path changes, CAN additions, existing-field renames/removals,
+    and forced clearing/rewrite of `u*` values.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-stale-display-warning-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-live-cell-update-path-investigation-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-cell-group-freshness-lock-2026-04-04.md`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
