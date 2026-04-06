@@ -254,6 +254,32 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-cell-group-freshness-lock-2026-04-04.md`
   - `include/param_prj.h`
 
+### DEC-0015 — Lock append-only cell-group range interpretation fields
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Lock new append-only diagnostic interpretation fields as:
+    `CellGrp0First`, `CellGrp0Last`, `CellGrp1First`, `CellGrp1Last`,
+    `CellGrp2First`, `CellGrp2Last`, `CellGrp3First`, `CellGrp3Last`,
+    `CellGrp4First`, `CellGrp4Last`.
+  - Lock meaning as first/last currently published `u*` index fed by each
+    ingest group in the current pass, diagnostic-only for web UI
+    interpretability.
+  - Preserve existing lock that `CellDataStaleWarn` is immediately after
+    `CellGrp4Fresh`; place these ten fields contiguously immediately after
+    `CellDataStaleWarn`.
+  - Keep next code slice out of scope for balancing logic changes,
+    SOC/current-path changes, CAN additions, existing-field renames/removals,
+    and forced clearing/rewrite of `u*` values.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-cell-group-range-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-live-cell-update-path-investigation-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-cell-group-freshness-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-stale-display-warning-lock-2026-04-04.md`
+  - `src/BatMan.cpp`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
