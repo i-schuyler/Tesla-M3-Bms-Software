@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2182
+//Next value Id: 2193
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -78,6 +78,17 @@
     VALUE_ENTRY(CellGrp2Fresh,"",    2179 ) \
     VALUE_ENTRY(CellGrp3Fresh,"",    2180 ) \
     VALUE_ENTRY(CellGrp4Fresh,"",    2181 ) \
+    VALUE_ENTRY(CellDataStaleWarn,"", 2182 ) \
+    VALUE_ENTRY(CellGrp0First,"",    2183 ) \
+    VALUE_ENTRY(CellGrp0Last,"",     2184 ) \
+    VALUE_ENTRY(CellGrp1First,"",    2185 ) \
+    VALUE_ENTRY(CellGrp1Last,"",     2186 ) \
+    VALUE_ENTRY(CellGrp2First,"",    2187 ) \
+    VALUE_ENTRY(CellGrp2Last,"",     2188 ) \
+    VALUE_ENTRY(CellGrp3First,"",    2189 ) \
+    VALUE_ENTRY(CellGrp3Last,"",     2190 ) \
+    VALUE_ENTRY(CellGrp4First,"",    2191 ) \
+    VALUE_ENTRY(CellGrp4Last,"",     2192 ) \
     VALUE_ENTRY(TempMax,     "°C",   2008 ) \
     VALUE_ENTRY(TempMin,     "°C",   2156 ) \
     VALUE_ENTRY(uavg,        "mV",   2009 ) \

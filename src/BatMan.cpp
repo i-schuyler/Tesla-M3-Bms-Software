@@ -681,6 +681,8 @@ void BATMan::upDateCellVolts(void)
     uint8_t Yc = 0; //Cell voltage register number
     uint8_t hc = 0; //Cells present per chip
     uint8_t h = 0; //Spot value index
+    uint8_t cellGrpFirst[5] = {0, 0, 0, 0, 0};
+    uint8_t cellGrpLast[5] = {0, 0, 0, 0, 0};
     uint16_t CellBalancing = 0;
     bool AllowBalancing = false;
     float OldUmin = Param::GetFloat(Param::umin);
@@ -747,6 +749,13 @@ void BATMan::upDateCellVolts(void)
                     CellVMin =  Voltage[Xr][Yc];
                     Param::SetInt(Param::CellMin, h+1);
                 }
+                uint8_t groupIdx = Yc / 3;
+                uint8_t publishedIndex = h + 1;
+                if (cellGrpFirst[groupIdx] == 0)
+                {
+                    cellGrpFirst[groupIdx] = publishedIndex;
+                }
+                cellGrpLast[groupIdx] = publishedIndex;
                 Param::SetFloat((Param::PARAM_NUM)(Param::u1 + h), (Voltage[Xr][Yc]));
                 //section to do balancing setup
                 if(Param::GetInt(Param::balance) && AllowBalancing == true) // Check if balancing flag is set
@@ -783,6 +792,17 @@ void BATMan::upDateCellVolts(void)
             break;
         }
     }
+
+    Param::SetInt(Param::CellGrp0First, cellGrpFirst[0]);
+    Param::SetInt(Param::CellGrp0Last, cellGrpLast[0]);
+    Param::SetInt(Param::CellGrp1First, cellGrpFirst[1]);
+    Param::SetInt(Param::CellGrp1Last, cellGrpLast[1]);
+    Param::SetInt(Param::CellGrp2First, cellGrpFirst[2]);
+    Param::SetInt(Param::CellGrp2Last, cellGrpLast[2]);
+    Param::SetInt(Param::CellGrp3First, cellGrpFirst[3]);
+    Param::SetInt(Param::CellGrp3Last, cellGrpLast[3]);
+    Param::SetInt(Param::CellGrp4First, cellGrpFirst[4]);
+    Param::SetInt(Param::CellGrp4Last, cellGrpLast[4]);
 
     Param::SetInt(Param::CellsBalancing, CellBalancing);
 }
