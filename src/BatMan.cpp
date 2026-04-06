@@ -388,7 +388,7 @@ void BATMan::GetData(uint8_t ReqID)
     //receive1 = spi_xfer(SPI1, Request[0]);  // do a transfer
     // receive2 = spi_xfer(SPI1, Request[1]);  // do a transfer
 
-    for (count2 = 0; count2 <= 72; count2 = count2 + 2)
+    for (count2 = 0; count2 < 72; count2 = count2 + 2)
     {
         receive1 = spi_xfer(SPI1, padding);  // do a transfer
         Fluffer[count2] = receive1 >> 8;
