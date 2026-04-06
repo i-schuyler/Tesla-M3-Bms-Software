@@ -214,6 +214,26 @@ evidence supports each status.
   - `src/BatMan.cpp`
   - `include/param_prj.h`
 
+### DEC-0013 — Lock bounded scope for proven parser/ingest overrun fix
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Lock the next parser safety code slice to one proven defect only:
+    `BATMan::GetData()` raw ingest overrun risk from `Fluffer[72]` storage with
+    loop bound `count2 <= 72`.
+  - Keep implementation bounded to ingest bound hardening only; do not alter
+    balancing behavior, State of Charge (SOC)/current path, or Controller Area
+    Network (CAN) payload/contracts.
+  - Keep parser group semantics and publication contracts unchanged while
+    removing overrun risk.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-parser-risk-lock-2026-04-04.md`
+  - `src/BatMan.cpp`
+  - `src/CAN_Common.cpp`
+  - `src/main.cpp`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
