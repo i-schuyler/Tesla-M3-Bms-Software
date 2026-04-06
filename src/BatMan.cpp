@@ -75,6 +75,7 @@ uint16_t Voltage[8][15] =
 };
 
 uint16_t CellBalCmd[8]= {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t CellGrpFresh[5]= {0, 0, 0, 0, 0};
 
 uint16_t Temps   [8] = {0};
 uint16_t Temp1   [8] = {0};
@@ -248,6 +249,11 @@ void BATMan::StateMachine()
 
     case 4:
     {
+        for (int groupIdx = 0; groupIdx < 5; groupIdx++)
+        {
+            CellGrpFresh[groupIdx] = 0;
+        }
+
         IdleWake();//unmute
         delay(SendDelay);
         GetData(0x4F);//Read status reg
@@ -301,6 +307,11 @@ void BATMan::StateMachine()
 
     case 7:
     {
+        Param::SetInt(Param::CellGrp0Fresh, CellGrpFresh[0]);
+        Param::SetInt(Param::CellGrp1Fresh, CellGrpFresh[1]);
+        Param::SetInt(Param::CellGrp2Fresh, CellGrpFresh[2]);
+        Param::SetInt(Param::CellGrp3Fresh, CellGrpFresh[3]);
+        Param::SetInt(Param::CellGrp4Fresh, CellGrpFresh[4]);
 
         upDateTemps();
         upDateCellVolts();
@@ -390,6 +401,8 @@ void BATMan::GetData(uint8_t ReqID)
     switch (ReqID)
     {
     case 0x47:
+    {
+        bool groupFresh = false;
         for (int h = 0; h < 8; h++)
         {
             for (int g = 0; g <= 2; g++)
@@ -398,12 +411,17 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    groupFresh = true;
                 }
             }
         }
+        CellGrpFresh[0] = groupFresh ? 1 : 0;
         break;
+    }
 
     case 0x48:
+    {
+        bool groupFresh = false;
         for (int h = 0; h < 8; h++)
         {
             for (int g = 3; g <= 5; g++)
@@ -412,12 +430,17 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    groupFresh = true;
                 }
             }
         }
+        CellGrpFresh[1] = groupFresh ? 1 : 0;
         break;
+    }
 
     case 0x49:
+    {
+        bool groupFresh = false;
         for (int h = 0; h < 8; h++)
         {
             for (int g = 6; g <= 8; g++)
@@ -426,13 +449,18 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5 ;
+                    groupFresh = true;
                 }
             }
         }
+        CellGrpFresh[2] = groupFresh ? 1 : 0;
         break;
+    }
 
 
     case 0x4A:
+    {
+        bool groupFresh = false;
         for (int h = 0; h < 8; h++)
         {
             for (int g = 9; g <= 11; g++)
@@ -441,12 +469,17 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    groupFresh = true;
                 }
             }
         }
+        CellGrpFresh[3] = groupFresh ? 1 : 0;
         break;
+    }
 
     case 0x4B:
+    {
+        bool groupFresh = false;
         for (int h = 0; h < 8; h++)
         {
             for (int g = 12; g <= 14; g++)
@@ -455,10 +488,13 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    groupFresh = true;
                 }
             }
         }
+        CellGrpFresh[4] = groupFresh ? 1 : 0;
         break;
+    }
 
     case 0x4C:
         for (int h = 0; h < 8; h++)
