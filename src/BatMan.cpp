@@ -793,6 +793,23 @@ void BATMan::upDateCellVolts(void)
         }
     }
 
+    uint8_t cellDataStaleWarn = 0;
+    bool seenFreshGroup = false;
+
+    for (uint8_t groupIdx = 0; groupIdx < 5; groupIdx++)
+    {
+        if (CellGrpFresh[groupIdx] != 0)
+        {
+            seenFreshGroup = true;
+        }
+        else if (seenFreshGroup)
+        {
+            cellDataStaleWarn = 1;
+            break;
+        }
+    }
+
+    Param::SetInt(Param::CellDataStaleWarn, cellDataStaleWarn);
     Param::SetInt(Param::CellGrp0First, cellGrpFirst[0]);
     Param::SetInt(Param::CellGrp0Last, cellGrpLast[0]);
     Param::SetInt(Param::CellGrp1First, cellGrpFirst[1]);
