@@ -194,6 +194,26 @@ evidence supports each status.
   - `include/BatMan.h`
   - `src/main.cpp`
 
+### DEC-0012 — Lock append-only cell-group freshness fields and placement
+
+- Date: 2026-04-04
+- Status: `LOCKED`
+- Decision:
+  - Lock append-only diagnostic fields for cell-group freshness as:
+    `CellGrp0Fresh`, `CellGrp1Fresh`, `CellGrp2Fresh`, `CellGrp3Fresh`,
+    `CellGrp4Fresh`.
+  - Lock meaning as per-group freshness indicators for the five Model 3
+    cell-ingest read groups (`0x47..0x4B`), diagnostic-only.
+  - Lock placement as five contiguous fields immediately after `AsDiffTrace`.
+  - Keep next code slice explicitly out of scope for balancing logic changes,
+    SOC/current-path behavior changes, CAN additions, and existing-field
+    renames/removals.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-cell-group-freshness-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-live-cell-update-path-investigation-2026-04-04.md`
+  - `src/BatMan.cpp`
+  - `include/param_prj.h`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
