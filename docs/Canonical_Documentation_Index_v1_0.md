@@ -34,6 +34,8 @@ change scope:
   order.
 - `docs/Project_Decisions_Snapshot_v0_1.md`: append-only decisions and
   decision status.
+- `docs/Parameter_Meanings_v0_1.md`: bounded meanings reference for the
+  session-added or session-clarified diagnostics and balancing-related fields.
 - `docs/Project_Assumptions_Registry_v0_1.md`: explicit assumptions, defaults,
   and confidence labels.
 - `README.md`: public-facing overview and navigation entry point.
