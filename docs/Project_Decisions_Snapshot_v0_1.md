@@ -280,6 +280,31 @@ evidence supports each status.
   - `src/BatMan.cpp`
   - `include/param_prj.h`
 
+### DEC-0016 — Lock parameter-meanings reference surface for session diagnostics
+
+- Date: 2026-04-03
+- Status: `LOCKED`
+- Decision:
+  - Adopt `docs/Parameter_Meanings_v0_1.md` as the bounded reference surface for
+    meanings of session-added or session-clarified diagnostics and
+    balancing-related fields.
+  - Keep this reference docs-only: no firmware, Controller Area Network (CAN),
+    balancing, or State of Charge (SOC) behavior changes are implied by this
+    decision.
+  - When meanings for the covered fields are clarified further, update this
+    reference append-only or supersede via a new decision entry rather than
+    silently redefining user-facing interpretation.
+- Evidence:
+  - `docs/Parameter_Meanings_v0_1.md`
+  - `include/param_prj.h`
+  - `src/BatMan.cpp`
+  - `src/BMSUtil.cpp`
+  - `docs/investigations/tesla-m3-bms-balancing-commanded-field-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-soc-trace-field-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-cell-group-freshness-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-stale-display-warning-lock-2026-04-04.md`
+  - `docs/investigations/tesla-m3-bms-cell-group-range-lock-2026-04-04.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
