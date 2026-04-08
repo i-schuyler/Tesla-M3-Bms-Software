@@ -76,6 +76,7 @@ uint16_t Voltage[8][15] =
 
 uint16_t CellBalCmd[8]= {0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t CellGrpFresh[5]= {0, 0, 0, 0, 0};
+uint8_t VoltageFresh[8][15] = {0};
 uint32_t CellLastRefreshSec[96] = {0};
 uint8_t CellSeenOnce[96] = {0};
 
@@ -261,6 +262,13 @@ void BATMan::StateMachine()
         {
             CellGrpFresh[groupIdx] = 0;
         }
+        for (int chipIdx = 0; chipIdx < 8; chipIdx++)
+        {
+            for (int slotIdx = 0; slotIdx < 15; slotIdx++)
+            {
+                VoltageFresh[chipIdx][slotIdx] = 0;
+            }
+        }
 
         IdleWake();//unmute
         delay(SendDelay);
@@ -419,6 +427,7 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    VoltageFresh[h][g] = 1;
                     groupFresh = true;
                 }
             }
@@ -438,6 +447,7 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    VoltageFresh[h][g] = 1;
                     groupFresh = true;
                 }
             }
@@ -457,6 +467,7 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5 ;
+                    VoltageFresh[h][g] = 1;
                     groupFresh = true;
                 }
             }
@@ -477,6 +488,7 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    VoltageFresh[h][g] = 1;
                     groupFresh = true;
                 }
             }
@@ -496,6 +508,7 @@ void BATMan::GetData(uint8_t ReqID)
                 if (tempvol != 0xffff)
                 {
                     Voltage[h][g] = tempvol / 12.5;
+                    VoltageFresh[h][g] = 1;
                     groupFresh = true;
                 }
             }
@@ -766,7 +779,7 @@ void BATMan::upDateCellVolts(void)
                 }
                 cellGrpLast[groupIdx] = publishedIndex;
                 Param::SetFloat((Param::PARAM_NUM)(Param::u1 + h), (Voltage[Xr][Yc]));
-                if (h < 96)
+                if (h < 96 && VoltageFresh[Xr][Yc] != 0)
                 {
                     CellLastRefreshSec[h] = nowSec;
                     CellSeenOnce[h] = 1;
