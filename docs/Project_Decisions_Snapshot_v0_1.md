@@ -305,6 +305,38 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-stale-display-warning-lock-2026-04-04.md`
   - `docs/investigations/tesla-m3-bms-cell-group-range-lock-2026-04-04.md`
 
+### DEC-0017 — Lock cell-age diagnostics semantics and exact parameter placement
+
+- Date: 2026-04-07
+- Status: `LOCKED`
+- Decision:
+  - Preserve existing `u1..u96` semantics as numeric last-known displayed cell
+    values; do not append age text into existing `u*` fields.
+  - Lock new append-only age diagnostics for a future bounded implementation
+    slice:
+    - summary fields: `CellStaleCount`, `CellMaxAge`
+    - per-cell fields: `u1Age..u96Age`
+  - Lock semantics:
+    - `u1Age..u96Age` are whole-second ages since corresponding displayed `uN`
+      was last refreshed from current-pass data.
+    - `CellMaxAge` is the maximum whole-second age across displayed `u1..u96`.
+    - `CellStaleCount` counts displayed cells stale by locked rule: `uNAge > 0`.
+  - Lock exact placement:
+    - insert `CellStaleCount` immediately after `CellGrp4Last`,
+    - insert `CellMaxAge` immediately after `CellStaleCount`,
+    - append `u1Age..u96Age` contiguously after existing `cpuload` at the bottom
+      of the display-value parameter list.
+  - Keep next slice out of scope for balancing logic changes, State of Charge
+    (SOC)/current-path changes, Controller Area Network (CAN) contract changes,
+    and renaming/retyping existing fields.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-cell-age-diagnostics-lock-2026-04-07.md`
+  - `include/param_prj.h`
+  - `src/BatMan.cpp`
+  - `src/terminal_prj.cpp`
+  - `src/main.cpp`
+  - `AGENTS.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
