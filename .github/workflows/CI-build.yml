@@ -19,7 +19,62 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
+
+      - name: Determine version guard mode
+        id: version_guard_mode
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          enforce_changelog_match=false
+          tag_name=""
+
+          if [[ "${GITHUB_REF:-}" == refs/tags/* ]]; then
+            enforce_changelog_match=true
+            tag_name="${GITHUB_REF_NAME:-${GITHUB_REF#refs/tags/}}"
+          else
+            base_sha=""
+            head_sha="${GITHUB_SHA:-}"
+
+            if [[ "${GITHUB_EVENT_NAME:-}" == "pull_request" ]]; then
+              base_sha="${{ github.event.pull_request.base.sha }}"
+              head_sha="${{ github.event.pull_request.head.sha }}"
+            elif [[ "${GITHUB_EVENT_NAME:-}" == "push" ]]; then
+              base_sha="${{ github.event.before }}"
+            fi
+
+            if [[ -n "${base_sha}" && ! "${base_sha}" =~ ^0+$ ]] && git cat-file -e "${base_sha}^{commit}" 2>/dev/null; then
+              if git diff --name-only "${base_sha}" "${head_sha}" | grep -qx 'docs/CHANGELOG.md'; then
+                enforce_changelog_match=true
+              fi
+            else
+              if git show --name-only --pretty='' "${head_sha}" | grep -qx 'docs/CHANGELOG.md'; then
+                enforce_changelog_match=true
+              fi
+            fi
+          fi
+
+          echo "enforce_changelog_match=${enforce_changelog_match}" >> "$GITHUB_OUTPUT"
+          echo "tag_name=${tag_name}" >> "$GITHUB_OUTPUT"
+
+      - name: Guard changelog/version/tag consistency
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cmd=(python3 scripts/check_release_version_consistency.py)
+
+          if [[ "${{ steps.version_guard_mode.outputs.enforce_changelog_match }}" == "true" ]]; then
+            cmd+=(--require-changelog-match)
+          fi
+
+          if [[ -n "${{ steps.version_guard_mode.outputs.tag_name }}" ]]; then
+            cmd+=(--tag "${{ steps.version_guard_mode.outputs.tag_name }}")
+          fi
+
+          "${cmd[@]}"
 
       - name: Install build package dependencies
         run: |
