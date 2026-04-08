@@ -76,6 +76,8 @@ uint16_t Voltage[8][15] =
 
 uint16_t CellBalCmd[8]= {0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t CellGrpFresh[5]= {0, 0, 0, 0, 0};
+uint32_t CellLastRefreshSec[96] = {0};
+uint8_t CellSeenOnce[96] = {0};
 
 uint16_t Temps   [8] = {0};
 uint16_t Temp1   [8] = {0};
@@ -194,6 +196,12 @@ void BATMan::BatStart()
     if (ChipNum > 8)
     {
         ChipNum = 8;
+    }
+
+    for (uint8_t cellIdx = 0; cellIdx < 96; cellIdx++)
+    {
+        CellLastRefreshSec[cellIdx] = 0;
+        CellSeenOnce[cellIdx] = 0;
     }
 }
 
@@ -681,6 +689,7 @@ void BATMan::upDateCellVolts(void)
     uint8_t Yc = 0; //Cell voltage register number
     uint8_t hc = 0; //Cells present per chip
     uint8_t h = 0; //Spot value index
+    const uint32_t nowSec = rtc_get_counter_val();
     uint8_t cellGrpFirst[5] = {0, 0, 0, 0, 0};
     uint8_t cellGrpLast[5] = {0, 0, 0, 0, 0};
     uint16_t CellBalancing = 0;
@@ -757,6 +766,11 @@ void BATMan::upDateCellVolts(void)
                 }
                 cellGrpLast[groupIdx] = publishedIndex;
                 Param::SetFloat((Param::PARAM_NUM)(Param::u1 + h), (Voltage[Xr][Yc]));
+                if (h < 96)
+                {
+                    CellLastRefreshSec[h] = nowSec;
+                    CellSeenOnce[h] = 1;
+                }
                 //section to do balancing setup
                 if(Param::GetInt(Param::balance) && AllowBalancing == true) // Check if balancing flag is set
                 {
@@ -820,6 +834,36 @@ void BATMan::upDateCellVolts(void)
     Param::SetInt(Param::CellGrp3Last, cellGrpLast[3]);
     Param::SetInt(Param::CellGrp4First, cellGrpFirst[4]);
     Param::SetInt(Param::CellGrp4Last, cellGrpLast[4]);
+
+    uint16_t cellStaleCount = 0;
+    uint32_t cellMaxAge = 0;
+    for (uint8_t cellIdx = 0; cellIdx < 96; cellIdx++)
+    {
+        uint32_t cellAge = 0;
+        if (CellSeenOnce[cellIdx] != 0)
+        {
+            cellAge = nowSec - CellLastRefreshSec[cellIdx];
+        }
+
+        if (cellAge > 65535)
+        {
+            cellAge = 65535;
+        }
+
+        Param::SetInt((Param::PARAM_NUM)(Param::u1Age + cellIdx), cellAge);
+
+        if (cellAge > 0)
+        {
+            cellStaleCount++;
+        }
+        if (cellAge > cellMaxAge)
+        {
+            cellMaxAge = cellAge;
+        }
+    }
+
+    Param::SetInt(Param::CellStaleCount, cellStaleCount);
+    Param::SetInt(Param::CellMaxAge, cellMaxAge);
 
     Param::SetInt(Param::CellsBalancing, CellBalancing);
 }

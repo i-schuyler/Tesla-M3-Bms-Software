@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2193
+//Next value Id: 2291
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -79,6 +79,8 @@
     VALUE_ENTRY(CellGrp3Fresh,"",    2180 ) \
     VALUE_ENTRY(CellGrp4Fresh,"",    2181 ) \
     VALUE_ENTRY(CellDataStaleWarn,"", 2182 ) \
+    VALUE_ENTRY(CellStaleCount,"",    2193 ) \
+    VALUE_ENTRY(CellMaxAge,   "s",    2194 ) \
     VALUE_ENTRY(CellGrp0First,"",    2183 ) \
     VALUE_ENTRY(CellGrp0Last,"",     2184 ) \
     VALUE_ENTRY(CellGrp1First,"",    2185 ) \
@@ -252,7 +254,103 @@
     VALUE_ENTRY(LoopCnt,      "",    2171 ) \
     VALUE_ENTRY(LoopState,    "",    2172 ) \
     VALUE_ENTRY(PecErrCnt,    "",    2173 ) \
-    VALUE_ENTRY(cpuload,     "%",    2129 )
+    VALUE_ENTRY(cpuload,     "%",    2129 ) \
+    VALUE_ENTRY(u1Age,        "s",   2195 ) \
+    VALUE_ENTRY(u2Age,        "s",   2196 ) \
+    VALUE_ENTRY(u3Age,        "s",   2197 ) \
+    VALUE_ENTRY(u4Age,        "s",   2198 ) \
+    VALUE_ENTRY(u5Age,        "s",   2199 ) \
+    VALUE_ENTRY(u6Age,        "s",   2200 ) \
+    VALUE_ENTRY(u7Age,        "s",   2201 ) \
+    VALUE_ENTRY(u8Age,        "s",   2202 ) \
+    VALUE_ENTRY(u9Age,        "s",   2203 ) \
+    VALUE_ENTRY(u10Age,       "s",   2204 ) \
+    VALUE_ENTRY(u11Age,       "s",   2205 ) \
+    VALUE_ENTRY(u12Age,       "s",   2206 ) \
+    VALUE_ENTRY(u13Age,       "s",   2207 ) \
+    VALUE_ENTRY(u14Age,       "s",   2208 ) \
+    VALUE_ENTRY(u15Age,       "s",   2209 ) \
+    VALUE_ENTRY(u16Age,       "s",   2210 ) \
+    VALUE_ENTRY(u17Age,       "s",   2211 ) \
+    VALUE_ENTRY(u18Age,       "s",   2212 ) \
+    VALUE_ENTRY(u19Age,       "s",   2213 ) \
+    VALUE_ENTRY(u20Age,       "s",   2214 ) \
+    VALUE_ENTRY(u21Age,       "s",   2215 ) \
+    VALUE_ENTRY(u22Age,       "s",   2216 ) \
+    VALUE_ENTRY(u23Age,       "s",   2217 ) \
+    VALUE_ENTRY(u24Age,       "s",   2218 ) \
+    VALUE_ENTRY(u25Age,       "s",   2219 ) \
+    VALUE_ENTRY(u26Age,       "s",   2220 ) \
+    VALUE_ENTRY(u27Age,       "s",   2221 ) \
+    VALUE_ENTRY(u28Age,       "s",   2222 ) \
+    VALUE_ENTRY(u29Age,       "s",   2223 ) \
+    VALUE_ENTRY(u30Age,       "s",   2224 ) \
+    VALUE_ENTRY(u31Age,       "s",   2225 ) \
+    VALUE_ENTRY(u32Age,       "s",   2226 ) \
+    VALUE_ENTRY(u33Age,       "s",   2227 ) \
+    VALUE_ENTRY(u34Age,       "s",   2228 ) \
+    VALUE_ENTRY(u35Age,       "s",   2229 ) \
+    VALUE_ENTRY(u36Age,       "s",   2230 ) \
+    VALUE_ENTRY(u37Age,       "s",   2231 ) \
+    VALUE_ENTRY(u38Age,       "s",   2232 ) \
+    VALUE_ENTRY(u39Age,       "s",   2233 ) \
+    VALUE_ENTRY(u40Age,       "s",   2234 ) \
+    VALUE_ENTRY(u41Age,       "s",   2235 ) \
+    VALUE_ENTRY(u42Age,       "s",   2236 ) \
+    VALUE_ENTRY(u43Age,       "s",   2237 ) \
+    VALUE_ENTRY(u44Age,       "s",   2238 ) \
+    VALUE_ENTRY(u45Age,       "s",   2239 ) \
+    VALUE_ENTRY(u46Age,       "s",   2240 ) \
+    VALUE_ENTRY(u47Age,       "s",   2241 ) \
+    VALUE_ENTRY(u48Age,       "s",   2242 ) \
+    VALUE_ENTRY(u49Age,       "s",   2243 ) \
+    VALUE_ENTRY(u50Age,       "s",   2244 ) \
+    VALUE_ENTRY(u51Age,       "s",   2245 ) \
+    VALUE_ENTRY(u52Age,       "s",   2246 ) \
+    VALUE_ENTRY(u53Age,       "s",   2247 ) \
+    VALUE_ENTRY(u54Age,       "s",   2248 ) \
+    VALUE_ENTRY(u55Age,       "s",   2249 ) \
+    VALUE_ENTRY(u56Age,       "s",   2250 ) \
+    VALUE_ENTRY(u57Age,       "s",   2251 ) \
+    VALUE_ENTRY(u58Age,       "s",   2252 ) \
+    VALUE_ENTRY(u59Age,       "s",   2253 ) \
+    VALUE_ENTRY(u60Age,       "s",   2254 ) \
+    VALUE_ENTRY(u61Age,       "s",   2255 ) \
+    VALUE_ENTRY(u62Age,       "s",   2256 ) \
+    VALUE_ENTRY(u63Age,       "s",   2257 ) \
+    VALUE_ENTRY(u64Age,       "s",   2258 ) \
+    VALUE_ENTRY(u65Age,       "s",   2259 ) \
+    VALUE_ENTRY(u66Age,       "s",   2260 ) \
+    VALUE_ENTRY(u67Age,       "s",   2261 ) \
+    VALUE_ENTRY(u68Age,       "s",   2262 ) \
+    VALUE_ENTRY(u69Age,       "s",   2263 ) \
+    VALUE_ENTRY(u70Age,       "s",   2264 ) \
+    VALUE_ENTRY(u71Age,       "s",   2265 ) \
+    VALUE_ENTRY(u72Age,       "s",   2266 ) \
+    VALUE_ENTRY(u73Age,       "s",   2267 ) \
+    VALUE_ENTRY(u74Age,       "s",   2268 ) \
+    VALUE_ENTRY(u75Age,       "s",   2269 ) \
+    VALUE_ENTRY(u76Age,       "s",   2270 ) \
+    VALUE_ENTRY(u77Age,       "s",   2271 ) \
+    VALUE_ENTRY(u78Age,       "s",   2272 ) \
+    VALUE_ENTRY(u79Age,       "s",   2273 ) \
+    VALUE_ENTRY(u80Age,       "s",   2274 ) \
+    VALUE_ENTRY(u81Age,       "s",   2275 ) \
+    VALUE_ENTRY(u82Age,       "s",   2276 ) \
+    VALUE_ENTRY(u83Age,       "s",   2277 ) \
+    VALUE_ENTRY(u84Age,       "s",   2278 ) \
+    VALUE_ENTRY(u85Age,       "s",   2279 ) \
+    VALUE_ENTRY(u86Age,       "s",   2280 ) \
+    VALUE_ENTRY(u87Age,       "s",   2281 ) \
+    VALUE_ENTRY(u88Age,       "s",   2282 ) \
+    VALUE_ENTRY(u89Age,       "s",   2283 ) \
+    VALUE_ENTRY(u90Age,       "s",   2284 ) \
+    VALUE_ENTRY(u91Age,       "s",   2285 ) \
+    VALUE_ENTRY(u92Age,       "s",   2286 ) \
+    VALUE_ENTRY(u93Age,       "s",   2287 ) \
+    VALUE_ENTRY(u94Age,       "s",   2288 ) \
+    VALUE_ENTRY(u95Age,       "s",   2289 ) \
+    VALUE_ENTRY(u96Age,       "s",   2290 )
 
 
 /***** Enum String definitions *****/

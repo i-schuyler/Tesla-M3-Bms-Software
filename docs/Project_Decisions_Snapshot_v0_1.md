@@ -337,6 +337,26 @@ evidence supports each status.
   - `src/main.cpp`
   - `AGENTS.md`
 
+### DEC-0018 — Refine cell-age summary placement before group-range diagnostics
+
+- Date: 2026-04-08
+- Status: `LOCKED`
+- Decision:
+  - Refine placement for cell-age summary diagnostics to match current locked
+    implementation slice requirements:
+    - `CellStaleCount` immediately after `CellDataStaleWarn`,
+    - `CellMaxAge` immediately after `CellStaleCount`.
+  - Preserve `CellGrp0First..CellGrp4Last` as a contiguous block that now
+    follows `CellMaxAge`.
+  - Keep prior lock that `u1Age..u96Age` remain appended at the bottom of the
+    display-value list.
+  - This entry supersedes only placement clauses in DEC-0017 and DEC-0015 where
+    they conflict with this ordering; all other semantics remain unchanged.
+- Evidence:
+  - `include/param_prj.h`
+  - `docs/investigations/tesla-m3-bms-cell-age-diagnostics-lock-2026-04-07.md`
+  - Session lock requirements for slice `HL-2026-04-03 — optimize_bms`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
