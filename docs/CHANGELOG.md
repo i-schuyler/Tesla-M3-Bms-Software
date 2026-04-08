@@ -40,14 +40,14 @@ Artifact:
 
 ---
 
-## v0.9.1-pre1 (current)
+## v0.9.1-pre2 (current)
 
-Version: v0.9.1-pre1
+Version: v0.9.1-pre2
 
-Date: 2026-04-04
+Date: 2026-04-08
 
 - Pre-production release. Field validation pending.
-- This pre-release builds on `v0.9.0-pre1` by improving parser safety and making the web UI much more useful for diagnosing stale or partial cell-update behavior before further hardware conclusions are made.
+- This pre-release builds on `v0.9.1-pre1` by adding append-only cell-age diagnostics and raw-slot freshness truth for improved stale/live interpretation before stronger hardware conclusions are made.
 
 ## What changed
 
@@ -81,6 +81,19 @@ Added append-only diagnostic:
 
 This warns when later ingest groups are not fresh after earlier groups are fresh, indicating the displayed `u*` list may be front-loaded or partially stale.
 
+### Cell-age diagnostics
+Added append-only diagnostics for displayed-cell age/staleness interpretation:
+- `CellStaleCount`
+- `CellMaxAge`
+- `u1Age..u96Age`
+
+These diagnostics are additive and do not redefine existing `u1..u96` numeric meaning.
+
+### Raw-slot freshness truth for age reset
+- Added raw per-slot freshness truth at `Voltage[8][15]` granularity in the Model 3 ingest/publication path.
+- Age reset now follows accepted current-pass raw updates (`non-0xffff` slot writes), not flattened publication occurrence alone.
+- This is intended to improve diagnostic truth for stale-versus-live interpretation; it is not a claim that root cause is fully solved.
+
 ### Documentation / operator reference
 - Added a bounded parameter meanings reference for the new and clarified diagnostics so operators can interpret them more consistently.
 
@@ -99,10 +112,13 @@ This warns when later ingest groups are not fresh after earlier groups are fresh
 - Firmware release assets are built and attached on release tags.
 - Parser overrun hardening is merged.
 - Freshness, range, and stale-warning diagnostics are present in firmware.
+- Cell-age diagnostics (`CellStaleCount`, `CellMaxAge`, `u1Age..u96Age`) are present in firmware.
+- Model 3 raw-slot freshness truth is wired into age reset behavior.
 - Parameter meanings for the new/clarified diagnostics are documented in repo.
 
 ## Not yet field-proven
 - Runtime behavior of the new freshness/range/warning diagnostics on live hardware
+- Runtime behavior of new cell-age diagnostics and raw-slot freshness-driven age reset on live hardware
 - Whether later cell groups are stale due to firmware ingest/publication behavior, measurement-path issues, or hardware-side causes
 - Final SOC/current-path correctness under `idcmode=0`
 
@@ -113,9 +129,15 @@ This warns when later ingest groups are not fresh after earlier groups are fresh
   - `CellGrp0Fresh..CellGrp4Fresh`
   - `CellDataStaleWarn`
   - `CellGrp0First..CellGrp4Last`
-  - selected `u*` values such as `u1`, `u12`, `u13`, `u24`, `u86`, `u96`
-- Confirm whether later ingest groups are fresh, stale, or absent in a way that explains the displayed cell pattern.
-- Confirm no regressions in existing parameter display, CAN behavior, or normal pack monitoring.
+  - `CellStaleCount`
+  - `CellMaxAge`
+  - selected `u*` values: `u1`, `u12`, `u13`, `u96`
+  - matching age values: `u1Age`, `u12Age`, `u13Age`, `u96Age`
+- Idle capture: verify age fields increase over whole seconds during idle/limited-refresh periods while `u*` values remain numeric.
+- Charge/discharge capture: verify actively refreshed cells show age reset behavior and compare `u1/u12` age patterns versus `u13/u96`.
+- Verify `CellStaleCount` and `CellMaxAge` move consistently with observed per-cell ages.
+- Confirm new age fields appear in expected UI locations and existing `u1..u96` remain unchanged in format/meaning.
+- Confirm no regressions in pack voltage interpretation (`udc`, `uavg`), `CellsPresent`, existing parameter display, CAN behavior, and normal pack monitoring.
 
 ## Release honesty note
 - This is a pre-production build intended to improve diagnosis of live cell-update / stale-display issues before stronger conclusions are drawn about hardware or full-system correctness.
