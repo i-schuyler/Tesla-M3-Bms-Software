@@ -40,9 +40,9 @@ Artifact:
 
 ---
 
-## v0.9.0-pre1 (current)
+## v0.9.1 (current)
 
-Version: v0.9.0-pre1
+Version: v0.9.1
 
 Date: 2026-04-04
 
@@ -69,7 +69,7 @@ Protocol/Contract changes (append-only):
 - Existing field names/meanings remain preserved; no renames/removals.
 
 Verification:
-- CI: TODO — confirm green status for tagged `v0.9.0-pre1` run (workflow support exists in-repo).
+- CI: TODO — confirm green status for `v0.9.1` release run (workflow support exists in-repo).
 - Field validation: pending post-release.
 
 Known issues / risks:
