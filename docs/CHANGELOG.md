@@ -40,47 +40,82 @@ Artifact:
 
 ---
 
-## v0.9.0-pre1 (current)
+## v0.9.1-pre1 (current)
 
-Version: v0.9.0-pre1
+Version: v0.9.1-pre1
 
 Date: 2026-04-04
 
-Summary (1–2 lines): Pre-production release candidate with bounded idcmode=0 correctness fixes, append-only diagnostics/contracts, and conservative SOC/current-path status. Field validation is pending.
+- Pre-production release. Field validation pending.
+- This pre-release builds on `v0.9.0-pre1` by improving parser safety and making the web UI much more useful for diagnosing stale or partial cell-update behavior before further hardware conclusions are made.
 
-Highlights:
-- Canonical docs spine, decisions snapshot, assumptions registry, and investigation structure were established and locked for docs-first governance.
-- Continuous Integration (CI) workflow includes publish-on-tag release asset upload for firmware binaries.
-- M3-ISS-01 and M3-ISS-02 fixes shipped (cell slot/index 14 coverage alignment and bounds-safe traversal).
-- M3-ISS-03 chip-count guardrail shipped for fixed-storage-safe ingestion traversal.
-- Append-only balancing metric field `CellsBalancingCmd` shipped.
-- Append-only SOC/current-path trace diagnostics `IDCTrace` and `AsDiffTrace` shipped.
-- SOC/current-path remains instrumented/investigated; no claim that SOC current-path behavior is fully fixed.
+## What changed
 
-Behavior changes (user-visible):
-- Improved Tesla Model 3 cell-ingestion correctness for slot coverage and loop-bound safety.
-- Added observable diagnostic/report fields: `CellsBalancingCmd`, `IDCTrace`, and `AsDiffTrace`.
-- No claim of final State of Charge (SOC) correctness change in this pre-release.
+### Parser / ingest hardening
+- Fixed the proven parser buffer traversal overrun risk in `BATMan::GetData()` by bounding the affected loop safely.
+- This is intended to reduce the risk of corrupted downstream publication from out-of-bounds traversal without changing broader parser behavior.
 
-Protocol/Contract changes (append-only):
-- Added `CellsBalancingCmd`.
-- Added `IDCTrace`.
-- Added `AsDiffTrace`.
-- Existing field names/meanings remain preserved; no renames/removals.
+### Cell-update freshness diagnostics
+Added append-only diagnostics to help determine which ingest groups are actually updating in the current pass:
+- `CellGrp0Fresh`
+- `CellGrp1Fresh`
+- `CellGrp2Fresh`
+- `CellGrp3Fresh`
+- `CellGrp4Fresh`
 
-Verification:
-- CI: TODO — confirm green status for tagged `v0.9.0-pre1` run (workflow support exists in-repo).
-- Field validation: pending post-release.
+These report whether each of the five cell-ingest groups produced valid data in the current pass.
 
-Known issues / risks:
-- Pre-production build.
-- No field validation yet.
-- No claim of final SOC/current-path correctness.
-- No claim of final balancing accuracy.
+### Group-to-cell interpretation diagnostics
+Added append-only diagnostics to show which displayed `u*` ranges are currently fed by each ingest group:
+- `CellGrp0First` / `CellGrp0Last`
+- `CellGrp1First` / `CellGrp1Last`
+- `CellGrp2First` / `CellGrp2Last`
+- `CellGrp3First` / `CellGrp3Last`
+- `CellGrp4First` / `CellGrp4Last`
 
-Rollback:
-- Previous tag: Fresh_Fork
+These are intended to make the freshness indicators interpretable in the web UI.
 
-Artifact:
-- Release asset name: stm32_m3bms.bin
-- sha256: [TODO]
+### Stale-display warning
+Added append-only diagnostic:
+- `CellDataStaleWarn`
+
+This warns when later ingest groups are not fresh after earlier groups are fresh, indicating the displayed `u*` list may be front-loaded or partially stale.
+
+### Documentation / operator reference
+- Added a bounded parameter meanings reference for the new and clarified diagnostics so operators can interpret them more consistently.
+
+## What did not change
+- No balancing threshold or cadence retuning
+- No proven SOC/current-path fix yet
+- No CAN payload/schema expansion for these diagnostics
+- No claim that balancing or SOC behavior is fully field-validated
+- No claim that observed stale/static cell behavior is definitively hardware-only
+
+## Update path
+- This release is intended for the STM32/main-controller firmware update path via the ESP8266-hosted web interface bridge (`/fwupdate` path expectation).
+- This release does not claim ESP8266 self-firmware changes.
+
+## Repo-proven
+- Firmware release assets are built and attached on release tags.
+- Parser overrun hardening is merged.
+- Freshness, range, and stale-warning diagnostics are present in firmware.
+- Parameter meanings for the new/clarified diagnostics are documented in repo.
+
+## Not yet field-proven
+- Runtime behavior of the new freshness/range/warning diagnostics on live hardware
+- Whether later cell groups are stale due to firmware ingest/publication behavior, measurement-path issues, or hardware-side causes
+- Final SOC/current-path correctness under `idcmode=0`
+
+## Recommended post-release validation
+- Update the STM32 firmware through the expected web UI update path.
+- Confirm the unit boots normally after update.
+- Capture:
+  - `CellGrp0Fresh..CellGrp4Fresh`
+  - `CellDataStaleWarn`
+  - `CellGrp0First..CellGrp4Last`
+  - selected `u*` values such as `u1`, `u12`, `u13`, `u24`, `u86`, `u96`
+- Confirm whether later ingest groups are fresh, stale, or absent in a way that explains the displayed cell pattern.
+- Confirm no regressions in existing parameter display, CAN behavior, or normal pack monitoring.
+
+## Release honesty note
+- This is a pre-production build intended to improve diagnosis of live cell-update / stale-display issues before stronger conclusions are drawn about hardware or full-system correctness.
