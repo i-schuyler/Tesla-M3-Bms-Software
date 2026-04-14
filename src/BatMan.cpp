@@ -719,6 +719,17 @@ void BATMan::upDateCellVolts(void)
         CellBalCmd[L] = 0;
     }
 
+    Param::SetFloat(Param::DbgU1Raw, 0);
+    Param::SetInt(Param::DbgU1Fresh, 0);
+    Param::SetFloat(Param::DbgU12Raw, 0);
+    Param::SetInt(Param::DbgU12Fresh, 0);
+    Param::SetFloat(Param::DbgU13Raw, 0);
+    Param::SetInt(Param::DbgU13Fresh, 0);
+    Param::SetFloat(Param::DbgU86Raw, 0);
+    Param::SetInt(Param::DbgU86Fresh, 0);
+    Param::SetFloat(Param::DbgU96Raw, 0);
+    Param::SetInt(Param::DbgU96Fresh, 0);
+
     //Determine if we should be balancing
 
     if(Param::GetFloat(Param::BallVthres) < Param::GetFloat(Param::umax))//Only balance if highest cell is above Balance Threshold
@@ -778,8 +789,38 @@ void BATMan::upDateCellVolts(void)
                     cellGrpFirst[groupIdx] = publishedIndex;
                 }
                 cellGrpLast[groupIdx] = publishedIndex;
-                Param::SetFloat((Param::PARAM_NUM)(Param::u1 + h), (Voltage[Xr][Yc]));
-                if (h < 96 && VoltageFresh[Xr][Yc] != 0)
+                float mappedVoltage = Voltage[Xr][Yc];
+                uint8_t mappedFresh = VoltageFresh[Xr][Yc] != 0 ? 1 : 0;
+
+                Param::SetFloat((Param::PARAM_NUM)(Param::u1 + h), mappedVoltage);
+
+                switch (publishedIndex)
+                {
+                case 1:
+                    Param::SetFloat(Param::DbgU1Raw, mappedVoltage);
+                    Param::SetInt(Param::DbgU1Fresh, mappedFresh);
+                    break;
+                case 12:
+                    Param::SetFloat(Param::DbgU12Raw, mappedVoltage);
+                    Param::SetInt(Param::DbgU12Fresh, mappedFresh);
+                    break;
+                case 13:
+                    Param::SetFloat(Param::DbgU13Raw, mappedVoltage);
+                    Param::SetInt(Param::DbgU13Fresh, mappedFresh);
+                    break;
+                case 86:
+                    Param::SetFloat(Param::DbgU86Raw, mappedVoltage);
+                    Param::SetInt(Param::DbgU86Fresh, mappedFresh);
+                    break;
+                case 96:
+                    Param::SetFloat(Param::DbgU96Raw, mappedVoltage);
+                    Param::SetInt(Param::DbgU96Fresh, mappedFresh);
+                    break;
+                default:
+                    break;
+                }
+
+                if (h < 96 && mappedFresh != 0)
                 {
                     CellLastRefreshSec[h] = nowSec;
                     CellSeenOnce[h] = 1;
