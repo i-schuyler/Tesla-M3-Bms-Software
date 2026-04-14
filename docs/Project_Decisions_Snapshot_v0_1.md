@@ -357,6 +357,42 @@ evidence supports each status.
   - `docs/investigations/tesla-m3-bms-cell-age-diagnostics-lock-2026-04-07.md`
   - Session lock requirements for slice `HL-2026-04-03 — optimize_bms`
 
+### DEC-0019 — Lock targeted raw-cell debug diagnostics and exact placement
+
+- Date: 2026-04-13
+- Status: `LOCKED`
+- Decision:
+  - Preserve existing semantics and contracts for `u1..u96`, `u1Age..u96Age`,
+    `CellStaleCount`, and `CellMaxAge`.
+  - Lock append-only targeted debug fields:
+    - raw mirrors: `DbgU1Raw`, `DbgU12Raw`, `DbgU13Raw`, `DbgU86Raw`,
+      `DbgU96Raw`
+    - fresh-this-pass flags: `DbgU1Fresh`, `DbgU12Fresh`, `DbgU13Fresh`,
+      `DbgU86Fresh`, `DbgU96Fresh`
+  - Lock semantics for each target index `N` in `{1, 12, 13, 86, 96}`:
+    - `DbgUNRaw` mirrors the internal mapped source value used by flattened
+      `u*` publication when published index `N` is processed in the current
+      pass.
+    - `DbgUNFresh` is `1` when that mapped source is fresh-this-pass by existing
+      per-slot freshness truth (`VoltageFresh[Xr][Yc] != 0`); else `0`.
+  - Lock exact placement as append-only contiguous insertion immediately after
+    existing `u96Age` at the bottom of the display-value list.
+  - Lock exact order with adjacent raw/fresh pairing:
+    `DbgU1Raw`, `DbgU1Fresh`, `DbgU12Raw`, `DbgU12Fresh`, `DbgU13Raw`,
+    `DbgU13Fresh`, `DbgU86Raw`, `DbgU86Fresh`, `DbgU96Raw`, `DbgU96Fresh`.
+  - Keep next code slice out of scope for balancing logic changes,
+    State of Charge (SOC)/current-path changes, Controller Area Network (CAN)
+    contract changes, and any renaming/retyping of existing fields.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-targeted-raw-debug-lock-2026-04-13.md`
+  - `docs/investigations/tesla-m3-bms-u-display-publication-investigation-2026-04-07.md`
+  - `docs/investigations/tesla-m3-bms-live-cell-update-path-investigation-2026-04-04.md`
+  - `include/param_prj.h`
+  - `src/BatMan.cpp`
+  - `src/terminal_prj.cpp`
+  - `src/main.cpp`
+  - `AGENTS.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
