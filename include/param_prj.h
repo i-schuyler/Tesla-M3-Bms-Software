@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2291
+//Next value Id: 2301
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -350,7 +350,17 @@
     VALUE_ENTRY(u93Age,       "s",   2287 ) \
     VALUE_ENTRY(u94Age,       "s",   2288 ) \
     VALUE_ENTRY(u95Age,       "s",   2289 ) \
-    VALUE_ENTRY(u96Age,       "s",   2290 )
+    VALUE_ENTRY(u96Age,       "s",   2290 ) \
+    VALUE_ENTRY(DbgU1Raw,     "mV",  2291 ) \
+    VALUE_ENTRY(DbgU1Fresh,   "",    2292 ) \
+    VALUE_ENTRY(DbgU12Raw,    "mV",  2293 ) \
+    VALUE_ENTRY(DbgU12Fresh,  "",    2294 ) \
+    VALUE_ENTRY(DbgU13Raw,    "mV",  2295 ) \
+    VALUE_ENTRY(DbgU13Fresh,  "",    2296 ) \
+    VALUE_ENTRY(DbgU86Raw,    "mV",  2297 ) \
+    VALUE_ENTRY(DbgU86Fresh,  "",    2298 ) \
+    VALUE_ENTRY(DbgU96Raw,    "mV",  2299 ) \
+    VALUE_ENTRY(DbgU96Fresh,  "",    2300 )
 
 
 /***** Enum String definitions *****/
