@@ -393,6 +393,45 @@ evidence supports each status.
   - `src/main.cpp`
   - `AGENTS.md`
 
+### DEC-0020 — Lock top-grouped firmware diagnostics block and source counters
+
+- Date: 2026-04-15
+- Status: `LOCKED`
+- Decision:
+  - Lock this follow-up scope as firmware-side diagnostics only and no
+    UI/browser work in this repository.
+  - Lock one grouped diagnostics block near the top of `PARAM_LIST` for coworker
+    testing visibility.
+  - Preserve pre-pre1 legacy ordering dependencies by adding diagnostic mirror
+    aliases (`Diag*`) rather than moving legacy source fields.
+  - Move newer diagnostics from the current release train into the grouped block
+    where safe and lock no-duplication for those moved fields.
+  - Lock newly added source diagnostics fields for targeted displayed cells:
+    `DbgU1SrcChip`, `DbgU1SrcSlot`, `DbgU1UpdCnt`, `DbgU12SrcChip`,
+    `DbgU12SrcSlot`, `DbgU12UpdCnt`, `DbgU13SrcChip`, `DbgU13SrcSlot`,
+    `DbgU13UpdCnt`, `DbgU86SrcChip`, `DbgU86SrcSlot`, `DbgU86UpdCnt`,
+    `DbgU96SrcChip`, `DbgU96SrcSlot`, `DbgU96UpdCnt`.
+  - Lock source-field semantics:
+    - `DbgU*SrcChip` = chip index of mapped internal source feeding displayed
+      cell in current pass.
+    - `DbgU*SrcSlot` = slot index of mapped internal source feeding displayed
+      cell in current pass.
+    - `DbgU*UpdCnt` = runtime-local monotonic count of accepted current-pass
+      updates observed for that mapped source path.
+  - Lock all new fields as numeric/machine-readable diagnostics only.
+  - This decision supersedes prior placement clauses in DEC-0017, DEC-0018, and
+    DEC-0019 where those placement clauses conflict with the new grouped block;
+    all non-placement semantics remain unchanged.
+  - This decision does not approve balancing, State of Charge (SOC)/current-path,
+    Controller Area Network (CAN), or other behavior changes.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-firmware-diagnostics-block-lock-2026-04-15.md`
+  - `docs/investigations/tesla-m3-bms-targeted-raw-debug-lock-2026-04-13.md`
+  - `include/param_prj.h`
+  - `src/BatMan.cpp`
+  - `docs/CHANGELOG.md`
+  - `AGENTS.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
