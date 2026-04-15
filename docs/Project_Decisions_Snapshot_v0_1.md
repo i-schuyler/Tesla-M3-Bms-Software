@@ -393,6 +393,47 @@ evidence supports each status.
   - `src/main.cpp`
   - `AGENTS.md`
 
+### DEC-0020 — Lock optional persisted 5-second auto-refresh and near-top grouped monitor block
+
+- Date: 2026-04-14
+- Status: `LOCKED`
+- Decision:
+  - Lock one optional UI auto-refresh control with exact label
+    `Auto-refresh every 5s`, exact interval `5000 ms`, and default state OFF.
+  - Lock local browser persistence of the auto-refresh ON/OFF setting across
+    page refresh/reload.
+  - Lock data-path consistency: auto-refresh must use the same existing
+    refresh/update path as manual refresh in the UI and must not introduce a
+    second divergent data path.
+  - Lock grouped near-top diagnostic monitor block for timed observation,
+    placed above the broader/global full parameter list, containing exactly:
+    - `u1`, `u12`, `u13`, `u86`, `u96`
+    - `u1Age`, `u12Age`, `u13Age`, `u86Age`, `u96Age`
+    - `DbgU1Raw`, `DbgU12Raw`, `DbgU13Raw`, `DbgU86Raw`, `DbgU96Raw`
+    - `DbgU1Fresh`, `DbgU12Fresh`, `DbgU13Fresh`, `DbgU86Fresh`,
+      `DbgU96Fresh`
+    - `CellStaleCount`, `CellMaxAge`
+    - `CellGrp0Fresh`, `CellGrp1Fresh`, `CellGrp2Fresh`, `CellGrp3Fresh`,
+      `CellGrp4Fresh`
+    - `CellDataStaleWarn`, `CellsPresent`, `udc`
+  - Lock future join rule: targeted source/slot/update-counter fields for the
+    same cells must join the same grouped monitor block when added:
+    - `DbgU1SrcChip`, `DbgU1SrcSlot`, `DbgU1UpdCnt`
+    - `DbgU12SrcChip`, `DbgU12SrcSlot`, `DbgU12UpdCnt`
+    - `DbgU13SrcChip`, `DbgU13SrcSlot`, `DbgU13UpdCnt`
+    - `DbgU86SrcChip`, `DbgU86SrcSlot`, `DbgU86UpdCnt`
+    - `DbgU96SrcChip`, `DbgU96SrcSlot`, `DbgU96UpdCnt`
+  - Preserve existing full-list parameter ordering/semantics and keep this lock
+    docs-first only (no firmware, balancing, SOC/current-path, CAN/reporting,
+    CI/release, or Makefile behavior changes approved by this entry).
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-auto-refresh-and-monitor-lock-2026-04-14.md`
+  - `include/param_prj.h`
+  - `src/terminal_prj.cpp`
+  - `src/main.cpp`
+  - `docs/Project_Decisions_Snapshot_v0_1.md`
+  - `AGENTS.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
