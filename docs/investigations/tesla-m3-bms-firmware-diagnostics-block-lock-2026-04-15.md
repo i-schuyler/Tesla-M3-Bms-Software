@@ -3,7 +3,7 @@
 ## Document Metadata
 
 - Title: Firmware-side grouped diagnostics block and source/counter lock
-- Version: 0.1
+- Version: 0.2
 - Date: 2026-04-15
 - Scope: Docs-first lock for a bounded firmware diagnostics follow-up slice
 - Status: Investigation artifact (non-canonical until promoted)
@@ -61,10 +61,6 @@ Explicit non-goals:
   - `u1`, `u12`, `u13`, `u86`, `u96` at `include/param_prj.h:102`,
     `include/param_prj.h:113`, `include/param_prj.h:114`,
     `include/param_prj.h:187`, `include/param_prj.h:197`
-  - `CellsPresent` at `include/param_prj.h:101`
-  - `CellGrp0Fresh..CellGrp4Fresh` at `include/param_prj.h:76` through
-    `include/param_prj.h:80`
-  - `CellDataStaleWarn` at `include/param_prj.h:81`
 
 ### 3.3 Existing newer diagnostics fields already in repository
 
@@ -76,9 +72,17 @@ Explicit non-goals:
 - Existing targeted raw/fresh diagnostics are present:
   - `DbgU1Raw..DbgU96Fresh` at `include/param_prj.h:354` through
     `include/param_prj.h:363`
+- Existing freshness/warn/presence diagnostics are present:
+  - `CellGrp0Fresh..CellGrp4Fresh` at `include/param_prj.h:76` through
+    `include/param_prj.h:80`
+  - `CellDataStaleWarn` at `include/param_prj.h:81`
+  - `CellsPresent` at `include/param_prj.h:101`
 - Current release history for these newer diagnostics is documented in
   `docs/CHANGELOG.md:96` through `docs/CHANGELOG.md:104` and
   `docs/CHANGELOG.md:54` through `docs/CHANGELOG.md:70`.
+- **Correction lock:** `CellsPresent`, `CellGrp0Fresh..CellGrp4Fresh`, and
+  `CellDataStaleWarn` are grouped directly using existing names and are **not**
+  duplicated as new `Diag*` mirror fields.
 
 ### 3.4 Current targeted raw debug lock
 
@@ -98,8 +102,8 @@ Explicit non-goals:
 - Canonical append-only decision governance is explicit in
   `docs/Project_Decisions_Snapshot_v0_1.md:12`,
   `docs/Project_Decisions_Snapshot_v0_1.md:23`, and
-  `docs/Project_Decisions_Snapshot_v0_1.md:435` through
-  `docs/Project_Decisions_Snapshot_v0_1.md:438`.
+  `docs/Project_Decisions_Snapshot_v0_1.md:464` through
+  `docs/Project_Decisions_Snapshot_v0_1.md:467`.
 - Investigation-vs-canonical promotion rule is explicit in
   `docs/Canonical_Documentation_Index_v1_0.md:49` through
   `docs/Canonical_Documentation_Index_v1_0.md:57`.
@@ -109,6 +113,18 @@ Explicit non-goals:
   `docs/investigations/tesla-m3-bms-repo-reality-scan-2026-04-04.md:92`.
 
 ## 4) Locked grouped diagnostics block design
+
+### 4.0 Correction applied in this revision
+
+- Prior revision text incorrectly treated these as new mirrored `Diag*` params:
+  `DiagCellsPresent`, `DiagCellGrp0Fresh`, `DiagCellGrp1Fresh`,
+  `DiagCellGrp2Fresh`, `DiagCellGrp3Fresh`, `DiagCellGrp4Fresh`, and
+  `DiagCellDataStaleWarn`.
+- This corrected revision locks those surfaces as existing newer diagnostics that
+  are grouped directly by existing names: `CellsPresent`,
+  `CellGrp0Fresh..CellGrp4Fresh`, and `CellDataStaleWarn`.
+- Only true legacy surfaces remain mirrored by new `Diag*` aliases in Section
+  4.2.
 
 ### 4.1 Placement lock (for follow-up implementation)
 
@@ -129,13 +145,6 @@ The following are new `Diag*` mirror fields and do not replace/move originals:
 - `DiagU13`
 - `DiagU86`
 - `DiagU96`
-- `DiagCellsPresent`
-- `DiagCellGrp0Fresh`
-- `DiagCellGrp1Fresh`
-- `DiagCellGrp2Fresh`
-- `DiagCellGrp3Fresh`
-- `DiagCellGrp4Fresh`
-- `DiagCellDataStaleWarn`
 
 ### 4.3 Field class B — Moved newer diagnostics fields
 
@@ -158,6 +167,13 @@ Move existing newer diagnostics fields into the grouped block (do not duplicate)
 - `DbgU96Fresh`
 - `CellStaleCount`
 - `CellMaxAge`
+- `CellGrp0Fresh`
+- `CellGrp1Fresh`
+- `CellGrp2Fresh`
+- `CellGrp3Fresh`
+- `CellGrp4Fresh`
+- `CellDataStaleWarn`
+- `CellsPresent`
 
 ### 4.4 Field class C — Newly added source/slot/update-counter fields
 
@@ -221,13 +237,13 @@ The grouped diagnostics block order is locked exactly as:
 36. `DbgU96UpdCnt`
 37. `CellStaleCount`
 38. `CellMaxAge`
-39. `DiagCellGrp0Fresh`
-40. `DiagCellGrp1Fresh`
-41. `DiagCellGrp2Fresh`
-42. `DiagCellGrp3Fresh`
-43. `DiagCellGrp4Fresh`
-44. `DiagCellDataStaleWarn`
-45. `DiagCellsPresent`
+39. `CellGrp0Fresh`
+40. `CellGrp1Fresh`
+41. `CellGrp2Fresh`
+42. `CellGrp3Fresh`
+43. `CellGrp4Fresh`
+44. `CellDataStaleWarn`
+45. `CellsPresent`
 
 ## 6) Semantic lock requirements
 
@@ -237,6 +253,8 @@ The grouped diagnostics block order is locked exactly as:
   only to support grouped diagnostics visibility without disturbing older
   ordering dependencies.
 - Moved newer diagnostics preserve their existing meaning exactly.
+- `CellsPresent`, `CellGrp0Fresh..CellGrp4Fresh`, and `CellDataStaleWarn` are
+  moved/grouped using existing names and are not mirrored as new `Diag*` fields.
 - All new fields in this lock remain numeric and machine-readable.
 - No browser/UI semantics are introduced in this firmware repository lock.
 
@@ -263,9 +281,9 @@ Reference implementation surfaces supporting this lock context:
 
 1. Firmware follow-up slice remains firmware-side only; no UI/browser tasks in
    this repository.
-2. Add the 13 mirrored `Diag*` fields from Section 4.2; keep original source
+2. Add the 6 mirrored `Diag*` fields from Section 4.2; keep original source
    fields where they currently are.
-3. Move the 17 newer diagnostics fields from Section 4.3 into the grouped block
+3. Move the 24 newer diagnostics fields from Section 4.3 into the grouped block
    (no duplication).
 4. Add the 15 new source/slot/update-counter fields from Section 4.4.
 5. Implement exact ordering from Section 5.
@@ -294,8 +312,8 @@ Reference implementation surfaces supporting this lock context:
    `src/BatMan.cpp:818`).
 4. Append-only canonical decision governance exists in
    `docs/Project_Decisions_Snapshot_v0_1.md:23` and
-   `docs/Project_Decisions_Snapshot_v0_1.md:435` through
-   `docs/Project_Decisions_Snapshot_v0_1.md:438`.
+   `docs/Project_Decisions_Snapshot_v0_1.md:464` through
+   `docs/Project_Decisions_Snapshot_v0_1.md:467`.
 
 ### INFERRED
 
