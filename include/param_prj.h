@@ -47,7 +47,7 @@
    3. Display values
  */
 //Next param id (increase when adding new parameter!): 12
-//Next value Id: 2301
+//Next value Id: 2322
 /*              category     name         unit       min     max     default id */
 #define PARAM_LIST \
     PARAM_ENTRY(CAT_BMS,     bmstype,     TYPES,     0,      2,      0,     1   ) \
@@ -73,14 +73,51 @@
     VALUE_ENTRY(idc,         "A",    2007 ) \
     VALUE_ENTRY(IDCTrace,    "A",    2175 ) \
     VALUE_ENTRY(AsDiffTrace, "As",   2176 ) \
+    VALUE_ENTRY(DiagUdc,     "V",    2301 ) \
+    VALUE_ENTRY(DiagU1,      "mV",   2302 ) \
+    VALUE_ENTRY(u1Age,       "s",    2195 ) \
+    VALUE_ENTRY(DbgU1Raw,    "mV",   2291 ) \
+    VALUE_ENTRY(DbgU1Fresh,  "",     2292 ) \
+    VALUE_ENTRY(DbgU1SrcChip,"",     2303 ) \
+    VALUE_ENTRY(DbgU1SrcSlot,"",     2304 ) \
+    VALUE_ENTRY(DbgU1UpdCnt, "",     2305 ) \
+    VALUE_ENTRY(DiagU12,     "mV",   2306 ) \
+    VALUE_ENTRY(u12Age,      "s",    2206 ) \
+    VALUE_ENTRY(DbgU12Raw,   "mV",   2293 ) \
+    VALUE_ENTRY(DbgU12Fresh, "",     2294 ) \
+    VALUE_ENTRY(DbgU12SrcChip,"",    2307 ) \
+    VALUE_ENTRY(DbgU12SrcSlot,"",    2308 ) \
+    VALUE_ENTRY(DbgU12UpdCnt,"",     2309 ) \
+    VALUE_ENTRY(DiagU13,     "mV",   2310 ) \
+    VALUE_ENTRY(u13Age,      "s",    2207 ) \
+    VALUE_ENTRY(DbgU13Raw,   "mV",   2295 ) \
+    VALUE_ENTRY(DbgU13Fresh, "",     2296 ) \
+    VALUE_ENTRY(DbgU13SrcChip,"",    2311 ) \
+    VALUE_ENTRY(DbgU13SrcSlot,"",    2312 ) \
+    VALUE_ENTRY(DbgU13UpdCnt,"",     2313 ) \
+    VALUE_ENTRY(DiagU86,     "mV",   2314 ) \
+    VALUE_ENTRY(u86Age,      "s",    2280 ) \
+    VALUE_ENTRY(DbgU86Raw,   "mV",   2297 ) \
+    VALUE_ENTRY(DbgU86Fresh, "",     2298 ) \
+    VALUE_ENTRY(DbgU86SrcChip,"",    2315 ) \
+    VALUE_ENTRY(DbgU86SrcSlot,"",    2316 ) \
+    VALUE_ENTRY(DbgU86UpdCnt,"",     2317 ) \
+    VALUE_ENTRY(DiagU96,     "mV",   2318 ) \
+    VALUE_ENTRY(u96Age,      "s",    2290 ) \
+    VALUE_ENTRY(DbgU96Raw,   "mV",   2299 ) \
+    VALUE_ENTRY(DbgU96Fresh, "",     2300 ) \
+    VALUE_ENTRY(DbgU96SrcChip,"",    2319 ) \
+    VALUE_ENTRY(DbgU96SrcSlot,"",    2320 ) \
+    VALUE_ENTRY(DbgU96UpdCnt,"",     2321 ) \
+    VALUE_ENTRY(CellStaleCount,"",    2193 ) \
+    VALUE_ENTRY(CellMaxAge,   "s",    2194 ) \
     VALUE_ENTRY(CellGrp0Fresh,"",    2177 ) \
     VALUE_ENTRY(CellGrp1Fresh,"",    2178 ) \
     VALUE_ENTRY(CellGrp2Fresh,"",    2179 ) \
     VALUE_ENTRY(CellGrp3Fresh,"",    2180 ) \
     VALUE_ENTRY(CellGrp4Fresh,"",    2181 ) \
     VALUE_ENTRY(CellDataStaleWarn,"", 2182 ) \
-    VALUE_ENTRY(CellStaleCount,"",    2193 ) \
-    VALUE_ENTRY(CellMaxAge,   "s",    2194 ) \
+    VALUE_ENTRY(CellsPresent,  "",   2159 ) \
     VALUE_ENTRY(CellGrp0First,"",    2183 ) \
     VALUE_ENTRY(CellGrp0Last,"",     2184 ) \
     VALUE_ENTRY(CellGrp1First,"",    2185 ) \
@@ -98,7 +135,6 @@
     VALUE_ENTRY(CellMin,       "",   2169 ) \
     VALUE_ENTRY(umax,        "mV",   2011 ) \
     VALUE_ENTRY(CellMax,       "",   2170 ) \
-    VALUE_ENTRY(CellsPresent,  "",   2159 ) \
     VALUE_ENTRY(u1,          "mV",   2012 ) \
     VALUE_ENTRY(u2,          "mV",   2013 ) \
     VALUE_ENTRY(u3,          "mV",   2014 ) \
@@ -255,7 +291,6 @@
     VALUE_ENTRY(LoopState,    "",    2172 ) \
     VALUE_ENTRY(PecErrCnt,    "",    2173 ) \
     VALUE_ENTRY(cpuload,     "%",    2129 ) \
-    VALUE_ENTRY(u1Age,        "s",   2195 ) \
     VALUE_ENTRY(u2Age,        "s",   2196 ) \
     VALUE_ENTRY(u3Age,        "s",   2197 ) \
     VALUE_ENTRY(u4Age,        "s",   2198 ) \
@@ -266,8 +301,6 @@
     VALUE_ENTRY(u9Age,        "s",   2203 ) \
     VALUE_ENTRY(u10Age,       "s",   2204 ) \
     VALUE_ENTRY(u11Age,       "s",   2205 ) \
-    VALUE_ENTRY(u12Age,       "s",   2206 ) \
-    VALUE_ENTRY(u13Age,       "s",   2207 ) \
     VALUE_ENTRY(u14Age,       "s",   2208 ) \
     VALUE_ENTRY(u15Age,       "s",   2209 ) \
     VALUE_ENTRY(u16Age,       "s",   2210 ) \
@@ -340,7 +373,6 @@
     VALUE_ENTRY(u83Age,       "s",   2277 ) \
     VALUE_ENTRY(u84Age,       "s",   2278 ) \
     VALUE_ENTRY(u85Age,       "s",   2279 ) \
-    VALUE_ENTRY(u86Age,       "s",   2280 ) \
     VALUE_ENTRY(u87Age,       "s",   2281 ) \
     VALUE_ENTRY(u88Age,       "s",   2282 ) \
     VALUE_ENTRY(u89Age,       "s",   2283 ) \
@@ -349,18 +381,7 @@
     VALUE_ENTRY(u92Age,       "s",   2286 ) \
     VALUE_ENTRY(u93Age,       "s",   2287 ) \
     VALUE_ENTRY(u94Age,       "s",   2288 ) \
-    VALUE_ENTRY(u95Age,       "s",   2289 ) \
-    VALUE_ENTRY(u96Age,       "s",   2290 ) \
-    VALUE_ENTRY(DbgU1Raw,     "mV",  2291 ) \
-    VALUE_ENTRY(DbgU1Fresh,   "",    2292 ) \
-    VALUE_ENTRY(DbgU12Raw,    "mV",  2293 ) \
-    VALUE_ENTRY(DbgU12Fresh,  "",    2294 ) \
-    VALUE_ENTRY(DbgU13Raw,    "mV",  2295 ) \
-    VALUE_ENTRY(DbgU13Fresh,  "",    2296 ) \
-    VALUE_ENTRY(DbgU86Raw,    "mV",  2297 ) \
-    VALUE_ENTRY(DbgU86Fresh,  "",    2298 ) \
-    VALUE_ENTRY(DbgU96Raw,    "mV",  2299 ) \
-    VALUE_ENTRY(DbgU96Fresh,  "",    2300 )
+    VALUE_ENTRY(u95Age,       "s",   2289 )
 
 
 /***** Enum String definitions *****/

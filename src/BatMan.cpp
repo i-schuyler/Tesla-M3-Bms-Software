@@ -79,6 +79,44 @@ uint8_t CellGrpFresh[5]= {0, 0, 0, 0, 0};
 uint8_t VoltageFresh[8][15] = {0};
 uint32_t CellLastRefreshSec[96] = {0};
 uint8_t CellSeenOnce[96] = {0};
+uint32_t DbgU1UpdateCount = 0;
+uint32_t DbgU12UpdateCount = 0;
+uint32_t DbgU13UpdateCount = 0;
+uint32_t DbgU86UpdateCount = 0;
+uint32_t DbgU96UpdateCount = 0;
+
+static Param::PARAM_NUM CellAgeParamFromIndex(uint8_t cellIdx)
+{
+    if (cellIdx == 0)
+    {
+        return Param::u1Age;
+    }
+    if (cellIdx <= 10)
+    {
+        return (Param::PARAM_NUM)(Param::u2Age + (cellIdx - 1));
+    }
+    if (cellIdx == 11)
+    {
+        return Param::u12Age;
+    }
+    if (cellIdx == 12)
+    {
+        return Param::u13Age;
+    }
+    if (cellIdx <= 84)
+    {
+        return (Param::PARAM_NUM)(Param::u14Age + (cellIdx - 13));
+    }
+    if (cellIdx == 85)
+    {
+        return Param::u86Age;
+    }
+    if (cellIdx <= 94)
+    {
+        return (Param::PARAM_NUM)(Param::u87Age + (cellIdx - 86));
+    }
+    return Param::u96Age;
+}
 
 uint16_t Temps   [8] = {0};
 uint16_t Temp1   [8] = {0};
@@ -729,6 +767,26 @@ void BATMan::upDateCellVolts(void)
     Param::SetInt(Param::DbgU86Fresh, 0);
     Param::SetFloat(Param::DbgU96Raw, 0);
     Param::SetInt(Param::DbgU96Fresh, 0);
+    Param::SetInt(Param::DbgU1SrcChip, 255);
+    Param::SetInt(Param::DbgU1SrcSlot, 255);
+    Param::SetInt(Param::DbgU1UpdCnt, DbgU1UpdateCount);
+    Param::SetInt(Param::DbgU12SrcChip, 255);
+    Param::SetInt(Param::DbgU12SrcSlot, 255);
+    Param::SetInt(Param::DbgU12UpdCnt, DbgU12UpdateCount);
+    Param::SetInt(Param::DbgU13SrcChip, 255);
+    Param::SetInt(Param::DbgU13SrcSlot, 255);
+    Param::SetInt(Param::DbgU13UpdCnt, DbgU13UpdateCount);
+    Param::SetInt(Param::DbgU86SrcChip, 255);
+    Param::SetInt(Param::DbgU86SrcSlot, 255);
+    Param::SetInt(Param::DbgU86UpdCnt, DbgU86UpdateCount);
+    Param::SetInt(Param::DbgU96SrcChip, 255);
+    Param::SetInt(Param::DbgU96SrcSlot, 255);
+    Param::SetInt(Param::DbgU96UpdCnt, DbgU96UpdateCount);
+    Param::SetFloat(Param::DiagU1, Param::GetFloat(Param::u1));
+    Param::SetFloat(Param::DiagU12, Param::GetFloat(Param::u12));
+    Param::SetFloat(Param::DiagU13, Param::GetFloat(Param::u13));
+    Param::SetFloat(Param::DiagU86, Param::GetFloat(Param::u86));
+    Param::SetFloat(Param::DiagU96, Param::GetFloat(Param::u96));
 
     //Determine if we should be balancing
 
@@ -797,24 +855,64 @@ void BATMan::upDateCellVolts(void)
                 switch (publishedIndex)
                 {
                 case 1:
+                    Param::SetFloat(Param::DiagU1, mappedVoltage);
                     Param::SetFloat(Param::DbgU1Raw, mappedVoltage);
                     Param::SetInt(Param::DbgU1Fresh, mappedFresh);
+                    Param::SetInt(Param::DbgU1SrcChip, Xr);
+                    Param::SetInt(Param::DbgU1SrcSlot, Yc);
+                    if (mappedFresh != 0)
+                    {
+                        DbgU1UpdateCount++;
+                    }
+                    Param::SetInt(Param::DbgU1UpdCnt, DbgU1UpdateCount);
                     break;
                 case 12:
+                    Param::SetFloat(Param::DiagU12, mappedVoltage);
                     Param::SetFloat(Param::DbgU12Raw, mappedVoltage);
                     Param::SetInt(Param::DbgU12Fresh, mappedFresh);
+                    Param::SetInt(Param::DbgU12SrcChip, Xr);
+                    Param::SetInt(Param::DbgU12SrcSlot, Yc);
+                    if (mappedFresh != 0)
+                    {
+                        DbgU12UpdateCount++;
+                    }
+                    Param::SetInt(Param::DbgU12UpdCnt, DbgU12UpdateCount);
                     break;
                 case 13:
+                    Param::SetFloat(Param::DiagU13, mappedVoltage);
                     Param::SetFloat(Param::DbgU13Raw, mappedVoltage);
                     Param::SetInt(Param::DbgU13Fresh, mappedFresh);
+                    Param::SetInt(Param::DbgU13SrcChip, Xr);
+                    Param::SetInt(Param::DbgU13SrcSlot, Yc);
+                    if (mappedFresh != 0)
+                    {
+                        DbgU13UpdateCount++;
+                    }
+                    Param::SetInt(Param::DbgU13UpdCnt, DbgU13UpdateCount);
                     break;
                 case 86:
+                    Param::SetFloat(Param::DiagU86, mappedVoltage);
                     Param::SetFloat(Param::DbgU86Raw, mappedVoltage);
                     Param::SetInt(Param::DbgU86Fresh, mappedFresh);
+                    Param::SetInt(Param::DbgU86SrcChip, Xr);
+                    Param::SetInt(Param::DbgU86SrcSlot, Yc);
+                    if (mappedFresh != 0)
+                    {
+                        DbgU86UpdateCount++;
+                    }
+                    Param::SetInt(Param::DbgU86UpdCnt, DbgU86UpdateCount);
                     break;
                 case 96:
+                    Param::SetFloat(Param::DiagU96, mappedVoltage);
                     Param::SetFloat(Param::DbgU96Raw, mappedVoltage);
                     Param::SetInt(Param::DbgU96Fresh, mappedFresh);
+                    Param::SetInt(Param::DbgU96SrcChip, Xr);
+                    Param::SetInt(Param::DbgU96SrcSlot, Yc);
+                    if (mappedFresh != 0)
+                    {
+                        DbgU96UpdateCount++;
+                    }
+                    Param::SetInt(Param::DbgU96UpdCnt, DbgU96UpdateCount);
                     break;
                 default:
                     break;
@@ -904,7 +1002,7 @@ void BATMan::upDateCellVolts(void)
             cellAge = 65535;
         }
 
-        Param::SetInt((Param::PARAM_NUM)(Param::u1Age + cellIdx), cellAge);
+        Param::SetInt(CellAgeParamFromIndex(cellIdx), cellAge);
 
         if (cellAge > 0)
         {
@@ -954,6 +1052,8 @@ void BATMan::upDateAuxVolts(void)
         Param::SetFloat(Param::ChipV8,ChipV[7]*0.001280);
         Param::SetFloat(Param::udc,(Param::GetFloat(Param::udc)+Param::GetFloat(Param::ChipV7)+Param::GetFloat(Param::ChipV8)));
     }
+
+    Param::SetFloat(Param::DiagUdc, Param::GetFloat(Param::udc));
 
     Param::SetInt(Param::uavg,(Param::GetFloat(Param::udc)/Param::GetInt(Param::CellsPresent)*1000));
 
