@@ -432,6 +432,35 @@ evidence supports each status.
   - `docs/CHANGELOG.md`
   - `AGENTS.md`
 
+### DEC-0021 — Correct diagnostics block field categories (no duplicate freshness/presence aliases)
+
+- Date: 2026-04-15
+- Status: `LOCKED`
+- Decision:
+  - Correct DEC-0020 field-category lock so only true legacy value surfaces are
+    mirrored with new `Diag*` aliases:
+    `DiagUdc`, `DiagU1`, `DiagU12`, `DiagU13`, `DiagU86`, `DiagU96`.
+  - Correct grouped diagnostics behavior so these existing newer diagnostics are
+    grouped directly by existing names and are not duplicated as new `Diag*`
+    parameters:
+    `CellsPresent`, `CellGrp0Fresh`, `CellGrp1Fresh`, `CellGrp2Fresh`,
+    `CellGrp3Fresh`, `CellGrp4Fresh`, `CellDataStaleWarn`.
+  - Preserve source/counter additions from DEC-0020 unchanged:
+    `DbgU*SrcChip`, `DbgU*SrcSlot`, and `DbgU*UpdCnt`.
+  - Lock corrected grouped-block ordering so entries 39-45 are:
+    `CellGrp0Fresh`, `CellGrp1Fresh`, `CellGrp2Fresh`, `CellGrp3Fresh`,
+    `CellGrp4Fresh`, `CellDataStaleWarn`, `CellsPresent`.
+  - Preserve docs-only scope and repository boundary: no UI/browser work in this
+    repo, no firmware behavior changes approved by this correction.
+  - This entry supersedes only the conflicting mirrored-vs-grouped field
+    categorization and related ordering clauses in DEC-0020; all other DEC-0020
+    semantics remain unchanged.
+- Evidence:
+  - `docs/investigations/tesla-m3-bms-firmware-diagnostics-block-lock-2026-04-15.md`
+  - `include/param_prj.h`
+  - `docs/Project_Decisions_Snapshot_v0_1.md`
+  - `AGENTS.md`
+
 ## Append-Only Rule
 
 - Do not rewrite old decisions.
