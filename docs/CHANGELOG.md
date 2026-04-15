@@ -40,7 +40,59 @@ Artifact:
 
 ---
 
-## v0.9.1-pre3 (current)
+## v0.9.1-pre4 (current)
+
+Version: v0.9.1-pre4
+
+Date: 2026-04-15
+
+- Diagnostic pre-release. Field validation pending.
+- This pre-release documents newly merged grouped diagnostics and source/slot/update-counter diagnostics used for runtime mapping/staleness investigation.
+
+## What changed
+
+### Grouped diagnostics block near top of `PARAM_LIST`
+- Grouped firmware diagnostics are now clustered near the top of `PARAM_LIST` for focused observation during validation captures.
+
+### Legacy mirrors for key displayed cells and pack voltage
+- `DiagUdc / DiagU1 / DiagU12 / DiagU13 / DiagU86 / DiagU96`
+
+### Source-chip, source-slot, and update-counter diagnostics
+- `DbgU*SrcChip`
+- `DbgU*SrcSlot`
+- `DbgU*UpdCnt`
+
+## Investigation questions this release is intended to answer
+- Whether later displayed cells are mapped from the wrong source.
+- Whether a valid-but-stable source is being repeatedly reused.
+
+## What did not change
+- No firmware logic changes in this release-sync slice beyond version string alignment.
+- No balancing logic or balancing reporting semantics changes.
+- No State of Charge (SOC)/current-path logic changes.
+- No Controller Area Network (CAN) reporting/payload changes.
+
+## Validation / field test focus
+- Compare `DiagU1 / DiagU12 / DiagU13 / DiagU86 / DiagU96`.
+- Compare `u1Age / u12Age / u13Age / u86Age / u96Age`.
+- Compare `DbgU1Raw / DbgU12Raw / DbgU13Raw / DbgU86Raw / DbgU96Raw`.
+- Compare `DbgU1Fresh / DbgU12Fresh / DbgU13Fresh / DbgU86Fresh / DbgU96Fresh`.
+- Compare `DbgU1SrcChip / DbgU12SrcChip / DbgU13SrcChip / DbgU86SrcChip / DbgU96SrcChip`.
+- Compare `DbgU1SrcSlot / DbgU12SrcSlot / DbgU13SrcSlot / DbgU86SrcSlot / DbgU96SrcSlot`.
+- Compare `DbgU1UpdCnt / DbgU12UpdCnt / DbgU13UpdCnt / DbgU86UpdCnt / DbgU96UpdCnt`.
+- Compare `CellStaleCount`.
+- Compare `CellMaxAge`.
+- Compare `CellGrp0Fresh..CellGrp4Fresh`.
+- Compare `CellDataStaleWarn`.
+- Compare `CellsPresent`.
+- Compare `udc` and `DiagUdc`.
+
+## Release honesty note
+- This is a diagnostics-focused pre-production release.
+- It does not claim root cause is solved.
+- Full 96-cell behavior still requires direct current hardware evidence.
+
+## v0.9.1-pre3
 
 Version: v0.9.1-pre3
 
