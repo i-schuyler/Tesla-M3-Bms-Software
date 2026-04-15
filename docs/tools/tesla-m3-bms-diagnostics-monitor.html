@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesla Model 3 BMS Diagnostics Monitor</title>
+<style>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 1rem;
+  background: #f6f7f9;
+  color: #1f2937;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  margin: 0.5rem 0;
+}
+
+.panel {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+input[type="text"] {
+  width: 15rem;
+  padding: 0.35rem 0.45rem;
+}
+
+button {
+  padding: 0.4rem 0.65rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #d1d5db;
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  vertical-align: top;
+}
+
+thead th {
+  background: #eef2ff;
+}
+
+.status {
+  font-size: 0.9rem;
+}
+
+.status.error {
+  color: #b91c1c;
+}
+
+.status.ok {
+  color: #065f46;
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Tesla Model 3 BMS Diagnostics Monitor</h1>
+
+  <section class="panel" aria-labelledby="monitor-title">
+    <h2 id="monitor-title">Targeted Timed Observation</h2>
+    <div class="controls">
+      <button id="refresh-now" type="button">Refresh now</button>
+      <label for="endpoint-path">JSON path</label>
+      <input id="endpoint-path" type="text" value="/json" autocomplete="off" spellcheck="false">
+      <label for="auto-refresh-toggle">
+        <input id="auto-refresh-toggle" type="checkbox">
+        Auto-refresh every 5s
+      </label>
+      <span class="status" id="refresh-status">No refresh yet.</span>
+    </div>
+    <table aria-label="Grouped diagnostics monitor">
+      <thead>
+        <tr>
+          <th scope="col">Field</th>
+          <th scope="col">Value</th>
+        </tr>
+      </thead>
+      <tbody id="monitor-rows"></tbody>
+    </table>
+  </section>
+
+  <section class="panel" aria-labelledby="full-list-title">
+    <h2 id="full-list-title">Full Parameter List</h2>
+    <table aria-label="All parameters">
+      <thead>
+        <tr>
+          <th scope="col">Field</th>
+          <th scope="col">Value</th>
+          <th scope="col">Unit</th>
+        </tr>
+      </thead>
+      <tbody id="full-parameter-rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<script>
+const AUTO_REFRESH_INTERVAL_MS = 5000;
+const AUTO_REFRESH_STORAGE_KEY = 'tesla-m3-bms-auto-refresh-every-5s-enabled';
+const MONITOR_FIELDS = [
+  'u1',
+  'u12',
+  'u13',
+  'u86',
+  'u96',
+  'u1Age',
+  'u12Age',
+  'u13Age',
+  'u86Age',
+  'u96Age',
+  'DbgU1Raw',
+  'DbgU12Raw',
+  'DbgU13Raw',
+  'DbgU86Raw',
+  'DbgU96Raw',
+  'DbgU1Fresh',
+  'DbgU12Fresh',
+  'DbgU13Fresh',
+  'DbgU86Fresh',
+  'DbgU96Fresh',
+  'CellStaleCount',
+  'CellMaxAge',
+  'CellGrp0Fresh',
+  'CellGrp1Fresh',
+  'CellGrp2Fresh',
+  'CellGrp3Fresh',
+  'CellGrp4Fresh',
+  'CellDataStaleWarn',
+  'CellsPresent',
+  'udc'
+];
+
+const monitorRows = document.getElementById('monitor-rows');
+const fullRows = document.getElementById('full-parameter-rows');
+const refreshNowButton = document.getElementById('refresh-now');
+const endpointPathInput = document.getElementById('endpoint-path');
+const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+const refreshStatus = document.getElementById('refresh-status');
+
+let monitorValueCells = new Map();
+let autoRefreshTimer = null;
+
+function formatValue(value) {
+  if (value === undefined || value === null) {
+    return '—';
+  }
+
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) {
+      return '—';
+    }
+    return String(value);
+  }
+
+  if (typeof value === 'object') {
+    return JSON.stringify(value);
+  }
+
+  return String(value);
+}
+
+function normalizePayload(payload) {
+  if (Array.isArray(payload)) {
+    const normalized = {};
+    for (const item of payload) {
+      if (!item || typeof item !== 'object') {
+        continue;
+      }
+
+      if (typeof item.name === 'string' && item.name.length > 0) {
+        normalized[item.name] = item;
+      }
+    }
+    return normalized;
+  }
+
+  if (payload && typeof payload === 'object') {
+    return payload;
+  }
+
+  return {};
+}
+
+function extractValue(entry) {
+  if (entry && typeof entry === 'object' && 'value' in entry) {
+    return entry.value;
+  }
+  return entry;
+}
+
+function extractUnit(entry) {
+  if (entry && typeof entry === 'object' && 'unit' in entry) {
+    return formatValue(entry.unit);
+  }
+  return '—';
+}
+
+function buildMonitorRows() {
+  monitorRows.textContent = '';
+  monitorValueCells = new Map();
+
+  for (const field of MONITOR_FIELDS) {
+    const row = document.createElement('tr');
+    const fieldCell = document.createElement('th');
+    fieldCell.scope = 'row';
+    fieldCell.textContent = field;
+
+    const valueCell = document.createElement('td');
+    valueCell.textContent = '—';
+
+    row.append(fieldCell, valueCell);
+    monitorRows.appendChild(row);
+    monitorValueCells.set(field, valueCell);
+  }
+}
+
+function renderMonitor(payloadMap) {
+  for (const field of MONITOR_FIELDS) {
+    const entry = payloadMap[field];
+    const value = extractValue(entry);
+    const cell = monitorValueCells.get(field);
+    if (cell) {
+      cell.textContent = formatValue(value);
+    }
+  }
+}
+
+function renderFullList(payloadMap) {
+  fullRows.textContent = '';
+
+  for (const [field, entry] of Object.entries(payloadMap)) {
+    const row = document.createElement('tr');
+    const fieldCell = document.createElement('th');
+    fieldCell.scope = 'row';
+    fieldCell.textContent = field;
+
+    const valueCell = document.createElement('td');
+    valueCell.textContent = formatValue(extractValue(entry));
+
+    const unitCell = document.createElement('td');
+    unitCell.textContent = extractUnit(entry);
+
+    row.append(fieldCell, valueCell, unitCell);
+    fullRows.appendChild(row);
+  }
+}
+
+function setStatus(message, ok) {
+  refreshStatus.textContent = message;
+  refreshStatus.classList.remove('ok', 'error');
+  refreshStatus.classList.add(ok ? 'ok' : 'error');
+}
+
+async function refreshParameters() {
+  const path = endpointPathInput.value.trim() || '/json';
+
+  try {
+    const response = await fetch(path, { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const payload = await response.json();
+    const payloadMap = normalizePayload(payload);
+
+    renderMonitor(payloadMap);
+    renderFullList(payloadMap);
+    setStatus(`Last refresh: ${new Date().toLocaleTimeString()}`, true);
+  } catch (error) {
+    setStatus(`Refresh failed: ${error.message}`, false);
+  }
+}
+
+function loadAutoRefreshSetting() {
+  try {
+    return window.localStorage.getItem(AUTO_REFRESH_STORAGE_KEY) === 'true';
+  } catch (error) {
+    return false;
+  }
+}
+
+function saveAutoRefreshSetting(enabled) {
+  try {
+    window.localStorage.setItem(AUTO_REFRESH_STORAGE_KEY, enabled ? 'true' : 'false');
+  } catch (error) {
+    return;
+  }
+}
+
+function applyAutoRefresh(enabled) {
+  if (autoRefreshTimer !== null) {
+    window.clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
+  }
+
+  if (enabled) {
+    autoRefreshTimer = window.setInterval(() => {
+      refreshParameters();
+    }, AUTO_REFRESH_INTERVAL_MS);
+  }
+}
+
+buildMonitorRows();
+autoRefreshToggle.checked = loadAutoRefreshSetting();
+applyAutoRefresh(autoRefreshToggle.checked);
+
+refreshNowButton.addEventListener('click', refreshParameters);
+autoRefreshToggle.addEventListener('change', () => {
+  const enabled = autoRefreshToggle.checked;
+  saveAutoRefreshSetting(enabled);
+  applyAutoRefresh(enabled);
+});
+
+refreshParameters();
+</script>
+</body>
+</html>
